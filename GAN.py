@@ -23,3 +23,29 @@ manualSeed = 999
 print ("random seed:" ,manualSeed)
 random.seed(manualSeed)
 torch.manual_seed(manualSeed)
+
+dataroot = 'data/celeba'
+workers = 2
+batch_size = 128
+image_size = 64
+nc = 3
+nz = 100
+ngf = 64
+ndf = 64
+num_epochs = 5
+lr = 0.0002
+beta1 = 0.5
+ngpu = 1
+
+dataset = dset.ImageFolder(root=dataroot,
+                           transform=transforms.Compose([
+                               transforms.Resize(image_size),
+                               transforms.CenterCrop(image_size),
+                               transforms.ToTensor(),
+                               transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)),
+                           ]));
+
+dataloader = torch.utils.data.DataLoader(dataset ,batch_size ,shuffle=True ,num_workers=workers)
+
+device = torch.device("cuda:0" if(torch.cuda.is_available() and ngpu > 0) else "cpu")
+
