@@ -16,3 +16,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
+
+
+
+manualSeed = 999
+print ("random seed:" ,manualSeed)
+random.seed(manualSeed)
+torch.manual_seed(manualSeed)
