@@ -49,3 +49,12 @@ dataloader = torch.utils.data.DataLoader(dataset ,batch_size ,shuffle=True ,num_
 
 device = torch.device("cuda:0" if(torch.cuda.is_available() and ngpu > 0) else "cpu")
 
+
+# custom weights initialization called on netG and netD
+def weights_init(m):
+    classname = m.__class__.__name__
+    if classname.find('Conv') != -1:
+        nn.init.normal_(m.weight.data, 0.0, 0.02)
+    elif classname.find('BatchNorm') != -1:
+        nn.init.normal_(m.weight.data, 1.0, 0.02)
+        nn.init.constant_(m.bias.data, 0)
