@@ -29,7 +29,7 @@ ndf = 64
 num_epochs = 5
 lr = 0.0002
 beta1 = 0.5
-ngpu = 2
+ngpu = 1
 
 # custom weights initialization called on netG and netD
 def weights_init(m):
