@@ -146,6 +146,10 @@ def train():
     print(netG)
     print(netD)
 
+    for parameter in netD.parameters():
+        parameter.register_hook(lambda grad:print('auto grad:\n',grad))
+        break;
+
     # Initialize BCELoss function
     criterion = nn.BCELoss()
 
@@ -210,10 +214,6 @@ def train():
            errD = errD_real + errD_fake
            # Update D
            
-           for parameter in netD.parameters():
-               print(parameter.size())
-               print(parameter.grad.size())
-               exit()
            
           
 
