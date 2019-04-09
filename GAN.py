@@ -101,7 +101,9 @@ class Discriminator(nn.Module):
     def forward(self, input):
         return self.main(input)
 
+global round_count
 round_count = 0
+
 def gradprint(grad):
     print('round ',round_count)
     round_count = round_count + 1
