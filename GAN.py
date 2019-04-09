@@ -191,6 +191,7 @@ def train():
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
            print(b_size)
+           print(label)
            # Forward pass real batch through D
            output = netD(real_cpu).view(-1)
            errD_real = criterion(output, label)
