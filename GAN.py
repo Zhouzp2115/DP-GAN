@@ -20,13 +20,13 @@ from IPython.display import HTML
 
 dataroot = 'data/celeba'
 workers = 2
-batch_size = 1
+batch_size = 128
 image_size = 64
 nc = 3
 nz = 100
 ngf = 64
 ndf = 64
-num_epochs = 5
+num_epochs = 50
 lr = 0.0002
 beta1 = 0.5
 ngpu = 2
@@ -125,8 +125,8 @@ def train():
                                transforms.ToTensor(),
                                transforms.Normalize((0.5,0.5,0.5),(0.5,0.5,0.5)),
                            ]));
-
-    dataloader = torch.utils.data.DataLoader(dataset ,batch_size ,shuffle=True ,num_workers=workers)
+    
+    dataloader = torch.utils.data.DataLoader(dataset ,1 ,shuffle=True ,num_workers=workers)
 
     device = torch.device("cuda:0" if(torch.cuda.is_available() and ngpu > 0) else "cpu")
     
@@ -176,17 +176,17 @@ def train():
     iters = 0
 
     print("Starting Training Loop...")
-    # For each epoch
+    
+    dataloader = iter(dataloader)
     for epoch in range(num_epochs):
-        # For each batch in the dataloader
-        for i, data in enumerate(dataloader, 0):
-
+        for i in range(batch_size):
            ############################
            # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
            ###########################
            ## Train with all-real batch
            netD.zero_grad()
            # Format batch
+           data = next(dataloader)
            real_cpu = data[0].to(device)
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
