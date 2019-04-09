@@ -164,13 +164,15 @@ def train():
     img_list = []
     G_losses = []
     D_losses = []
+    G_losses_batch = []
+    D_losses_batch = []
     iters = 0
 
     print("Starting Training Loop...")
     
     dataloader = iter(dataloader)
     for epoch in range(num_epochs):
-        for i in range(batch_size):
+        for i in range(1,batch_size+1):
            ############################
            # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
            ###########################
@@ -187,7 +189,7 @@ def train():
            errD_real = criterion(output, label)
    
            errD_real.backward()
-           D_x = output.mean().item()
+           
 
            ## Train with all-fake batch
            # Generate batch of latent vectors
@@ -203,9 +205,9 @@ def train():
            errD_fake = criterion(output, label)
            # Calculate the gradients for this batch
            errD_fake.backward()
-           D_G_z1 = output.mean().item()
            # Add the gradients from the all-real and all-fake batches
            errD = errD_real + errD_fake
+           D_losses_batch.append(errD)
            # Update D
            optimizerD.step()
 
@@ -220,27 +222,29 @@ def train():
            errG = criterion(output, label)
            # Calculate gradients for G
            errG.backward()
-           D_G_z2 = output.mean().item()
+           G_losses_batch.append(errG)
            # Update G
            optimizerG.step()
 
            # Output training stats
            if i % 50 == 0:
-               print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f\tD(x): %.4f\tD(G(z)): %.4f / %.4f'
+               print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f'
                   % (epoch, num_epochs, i, batch_size,
-                     errD.item(), errG.item(), D_x, D_G_z1, D_G_z2))
+                     sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
 
-           # Save Losses for plotting later
-           G_losses.append(errG.item())
-           D_losses.append(errD.item())
+        # Save Losses for plotting later
+        G_losses.append(sum(G_losses_batch).item())
+        D_losses.append(sum(D_losses_batch).item())
+        G_losses_batch.clear()
+        D_losses_batch.clear()
 
-           # Check how the generator is doing by saving G's output on fixed_noise
-           if (iters % 10 == 0) or ((epoch == num_epochs-1) and (i == len(dataloader)-1)):
-               with torch.no_grad():
-                  fake = netG(fixed_noise).detach().cpu()
-               img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
+        # Check how the generator is doing by saving G's output on fixed_noise
+        if (iters % 10 == 0) or ((epoch == num_epochs-1) and (i == len(dataloader)-1)):
+            with torch.no_grad():
+                fake = netG(fixed_noise).detach().cpu()
+            img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
 
-           iters += 1
+        iters += 1
     
     plt.figure(figsize=(10,5))
     plt.title("Generator and Discriminator Loss During Training")
