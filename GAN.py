@@ -211,7 +211,7 @@ def train():
            # Update D
            
            for parameter in netD.parameters():
-               print(parameter[0][0].size())
+               print(parameter[0][0][0][0].grad().size())
                exit()
            
           
