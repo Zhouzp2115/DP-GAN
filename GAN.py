@@ -29,7 +29,7 @@ ndf = 64
 num_epochs = 5
 lr = 0.0002
 beta1 = 0.5
-ngpu = 1
+ngpu = 2
 
 # custom weights initialization called on netG and netD
 def weights_init(m):
@@ -219,11 +219,8 @@ def train():
            # Add the gradients from the all-real and all-fake batches
            errD = errD_real + errD_fake
            # Update D
-           
-           
-          
-
            optimizerD.step()
+           exit()
 
            ############################
            # (2) Update G network: maximize log(D(G(z)))
