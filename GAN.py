@@ -211,9 +211,10 @@ def train():
            # Update D
            
            for parameter in netD.parameters():
-               print(parameter)
+               print(parameter.size())
+               exit()
            
-           exit()
+          
 
            optimizerD.step()
 
