@@ -106,7 +106,7 @@ def train():
      transforms.ToTensor(),
      transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    dataset = dset.CIFAR10(root='data', train=True,
+    dataset = dset.CIFAR10(root='data/cifar-10', train=True,
                                         download=True, transform=transform)
     dataloader = torch.utils.data.DataLoader(dataset, 1,
                                           shuffle=True, num_workers=workers)
