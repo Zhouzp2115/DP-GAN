@@ -101,7 +101,11 @@ class Discriminator(nn.Module):
     def forward(self, input):
         return self.main(input)
 
-
+round_count = 0
+def gradprint(grad):
+    print('round ',round_count)
+    round_count = round_count + 1
+    return grad
 
 
 def train():
@@ -147,7 +151,7 @@ def train():
     print(netD)
 
     for parameter in netD.parameters():
-        parameter.register_hook(lambda grad:print('auto grad:\n',grad))
+        parameter.register_hook(gradprint)
         break;
 
     # Initialize BCELoss function
