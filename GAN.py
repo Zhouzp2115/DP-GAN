@@ -20,7 +20,7 @@ from IPython.display import HTML
 
 dataroot = 'data/celeba'
 workers = 2
-batch_size = 128
+batch_size = 1
 image_size = 64
 nc = 3
 nz = 100
@@ -152,9 +152,6 @@ def train():
     print(netG)
     print(netD)
 
-    for parameter in netD.parameters():
-        parameter.register_hook(gradprint)
-        break;
 
     # Initialize BCELoss function
     criterion = nn.BCELoss()
@@ -191,9 +188,9 @@ def train():
            netD.zero_grad()
            # Format batch
            real_cpu = data[0].to(device)
-
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
+           print(b_size)
            # Forward pass real batch through D
            output = netD(real_cpu).view(-1)
            errD_real = criterion(output, label)
@@ -220,7 +217,6 @@ def train():
            errD = errD_real + errD_fake
            # Update D
            optimizerD.step()
-           exit()
 
            ############################
            # (2) Update G network: maximize log(D(G(z)))
