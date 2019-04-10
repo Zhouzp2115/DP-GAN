@@ -35,13 +35,10 @@ def train():
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_0', transform)
     trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
-    trainloader = iter(trainloader)
-
-    data_batch = next(trainloader)
 
     Gan = CIFAR10_Net(2)
-    Gan.train(data_batch[0])
-
+    for index, data in enumerate(trainloader):
+        Gan.train(data[0])
 
 
 if __name__ == '__main__':
