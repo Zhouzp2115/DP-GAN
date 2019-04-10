@@ -39,12 +39,9 @@ def train():
 
     data_batch = next(trainloader)
 
-    #Gan = CIFAR10_Net(2)
-    #Gan.train(data_batch)
+    Gan = CIFAR10_Net(2)
+    Gan.train(data_batch[0])
 
-    for data, label in enumerate(batch_data):
-        print(type(data))
-        print(type(label))
 
 
 if __name__ == '__main__':

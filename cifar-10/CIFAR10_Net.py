@@ -127,7 +127,7 @@ class CIFAR10_Net():
         D_losses_batch = []
 
         i = 1
-        for data,label in enumerate(batch_data):
+        for index,data in enumerate(batch_data):
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
