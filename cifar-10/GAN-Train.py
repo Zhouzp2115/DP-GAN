@@ -34,7 +34,7 @@ def dataClassify(root):
     
     data = []
     for i in range(10):
-        data.append([[])
+        data.append([])
     
     for i,item in enumerate(dataloader):
         x,label = item
