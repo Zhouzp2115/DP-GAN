@@ -127,7 +127,7 @@ def train():
     plt.axis("off")
     plt.title("Training Images")
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(),(1,2,0)))
-    plt.savefig('TrainImg.png')
+    plt.savefig('dcgan/TrainImg.png')
     #plt.show()
 
     netG = Generator(ngpu).to(device)
@@ -253,7 +253,7 @@ def train():
     plt.xlabel("iterations")
     plt.ylabel("Loss")
     plt.legend()
-    plt.savefig("loss.png")
+    plt.savefig("dcgan/loss.png")
     
     # Grab a batch of real images from the dataloader
     real_batch = next(iter(dataloader))
@@ -264,17 +264,17 @@ def train():
     plt.axis("off")
     plt.title("Real Images")
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0)))
-    plt.savefig("realimg.png")
+    plt.savefig("dcgan/realimg.png")
 
     # Plot the fake images from the last epoch
     plt.subplot(1,2,2)
     plt.axis("off")
     plt.title("Fake Images")
     plt.imshow(np.transpose(img_list[-1],(1,2,0)))
-    plt.savefig("fakeimg.png")
+    plt.savefig("dcgan/fakeimg.png")
 
-    torch.save(netD ,"netD.pt")
-    torch.save(netG ,"netG.pt")
+    torch.save(netD ,"dcgan/netD.pt")
+    torch.save(netG ,"dcgan/netG.pt")
     
 
 if __name__ == '__main__':

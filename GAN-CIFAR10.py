@@ -119,7 +119,7 @@ def train():
     plt.axis("off")
     plt.title("Training Images")
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(),(1,2,0)))
-    plt.savefig('TrainImg-CIFAR.png')
+    plt.savefig('cifar-10/TrainImg-CIFAR.png')
     #plt.show()
     exit()
 
@@ -246,7 +246,7 @@ def train():
     plt.xlabel("iterations")
     plt.ylabel("Loss")
     plt.legend()
-    plt.savefig("loss.png")
+    plt.savefig("cifar-10/loss.png")
     
     # Grab a batch of real images from the dataloader
     real_batch = next(iter(dataloader))
@@ -257,17 +257,17 @@ def train():
     plt.axis("off")
     plt.title("Real Images")
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0)))
-    plt.savefig("realimg.png")
+    plt.savefig("cifar-10/realimg.png")
 
     # Plot the fake images from the last epoch
     plt.subplot(1,2,2)
     plt.axis("off")
     plt.title("Fake Images")
     plt.imshow(np.transpose(img_list[-1],(1,2,0)))
-    plt.savefig("fakeimg.png")
+    plt.savefig("cifar-10/fakeimg.png")
 
-    torch.save(netD ,"netD.pt")
-    torch.save(netG ,"netG.pt")
+    torch.save(netD ,"cifar-10/netD.pt")
+    torch.save(netG ,"cifar-10/netG.pt")
     
 
 if __name__ == '__main__':
