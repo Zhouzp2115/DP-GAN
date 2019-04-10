@@ -117,8 +117,6 @@ class CIFAR10_Net():
         self.D_grad = []
 
     def train(self ,batch_data):
-        self.fixed_noise = torch.randn(64, nz, 1, 1, device=self.device)
-        # Establish convention for real and fake labels during training
         real_label = 1
         fake_label = 0
         G_grad_batch = []
@@ -147,9 +145,9 @@ class CIFAR10_Net():
             errD = errD_real + errD_fake
             D_losses_batch.append(errD)
    
-            for parameters in self.netD.parameters():
-                D_grad_batch.append(parameters.grad.clone().detach())
-            self.D_grad.append(D_grad_batch)
+            #for parameters in self.netD.parameters():
+            #    D_grad_batch.append(parameters.grad.clone().detach())
+            #self.D_grad.append(D_grad_batch)
             self.optimizerD.step()
 
             self.netG.zero_grad()
@@ -159,17 +157,17 @@ class CIFAR10_Net():
             errG.backward()
             G_losses_batch.append(errG)
 
-            for parameters in self.netG.parameters():
-                G_grad_batch.append(parameters.grad.clone().detach())
-            self.G_grad.append(G_grad_batch)
+            #for parameters in self.netG.parameters():
+            #    G_grad_batch.append(parameters.grad.clone().detach())
+            #self.G_grad.append(G_grad_batch)
             self.optimizerG.step()
  
             if i % 50 == 0:
                print('Loss_D: %.4f\tLoss_G: %.4f'
                   % (sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
             i += 1
-        self.G_losses.append(sum(G_losses_batch).item()/len(batch_data[0]))
-        self.D_losses.append(sum(D_losses_batch).item()/len(batch_data[0]))
+        self.G_losses.append(sum(G_losses_batch).item()/(i-1))
+        self.D_losses.append(sum(D_losses_batch).item()/(i-1))
 
     def plotloss(self ,file):
         plt.figure(figsize=(10,5))

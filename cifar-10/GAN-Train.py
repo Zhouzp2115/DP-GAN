@@ -38,7 +38,9 @@ def train():
 
     Gan = CIFAR10_Net(2)
     for index, data in enumerate(trainloader):
+        print('batch_',index)
         Gan.train(data[0])
+    print('train over')
 
 
 if __name__ == '__main__':
