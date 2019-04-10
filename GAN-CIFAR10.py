@@ -121,7 +121,6 @@ def train():
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(),(1,2,0)))
     plt.savefig('cifar-10/TrainImg-CIFAR.png')
     #plt.show()
-    exit()
 
     netG = Generator(ngpu).to(device)
     netD = Discriminator(ngpu).to(device)
@@ -159,6 +158,8 @@ def train():
     D_losses = []
     G_losses_batch = []
     D_losses_batch = []
+    G_parameters_grad = []
+    D_parameters_grad = []
     iters = 0
 
     print("Starting Training Loop...")
