@@ -1,5 +1,5 @@
 from __future__ import print_function
-#%matplotlib inline
+# %matplotlib inline
 import argparse
 import os
 import random
@@ -21,7 +21,6 @@ import pickle
 from CIFAR10_Net import CIFAR10_Net
 
 
-
 def unPickle(fileDir):
     fo = open(fileDir, 'rb')
     dict = pickle.load(fo, encoding='latin1')
@@ -36,41 +35,37 @@ def saveData(dir, filename, dict):
 
     file = open(dir + filename, 'wb')
     pickle.dump(dict, file)
-    print ('save file..........ok')
+    print('save file..........ok')
+
 
 def dataSort(root):
     data = []
-    for i in range(1,6):
-        data.append(unPickle(root+'data_batch_'+str(i)))
-    
+    for i in range(1, 6):
+        data.append(unPickle(root + 'data_batch_' + str(i)))
+
     res = []
     for i in range(10):
-        res.append({'data':[] ,'labels':[]})
-    
-    for i in range(1,6):
+        res.append({'data': [], 'labels': []})
+
+    for i in range(5):
         for j in range(len(data[i]['data'])):
             x = data[i]['data'][j]
             label = data[i]['labels'][j]
             res[label]['data'].append(x)
             res[label]['labels'].append(label)
-    
+
     for i in range(10):
-        saveData(root+'../' ,'train_'+str(i) ,res[i])    
-
-
-    
-        
+        saveData(root + '../sorted', 'train_' + str(i), res[i])
 
 
 def train():
     manualSeed = 999
-    print ("random seed:" ,manualSeed)
+    print("random seed:", manualSeed)
     random.seed(manualSeed)
     torch.manual_seed(manualSeed)
-    
+
     dataSort('../data/cifar-10/cifar-10-batches-py/')
-    
-    
+
 
 if __name__ == '__main__':
     train()
