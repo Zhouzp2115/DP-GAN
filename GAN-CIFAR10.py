@@ -207,6 +207,8 @@ def train():
            # Update D      
            for parameters in netD.parameters():
                D_grad_batch.append(parameters.grad.clone().detach())
+           D_grad.append(D_grad_batch)
+           D_grad_batch.clear()
            optimizerD.step()
 
            ############################
@@ -224,6 +226,8 @@ def train():
            # Update G
            for parameters in netG.parameters():
                G_grad_batch.append(parameters.grad.clone().detach())
+           G_grad.append(G_grad_batch)
+           G_grad_batch.clear()
            optimizerG.step()
 
            # Output training stats
@@ -231,15 +235,11 @@ def train():
                print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f'
                   % (epoch, num_epochs, i, batch_size,
                      sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
-        
-        G_grad.append(G_grad_batch)
-        D_grad.append(D_grad_batch)
-        G_grad_batch.clear()
-        D_grad_batch.clear()
+
         print('G_parameters_grad ' ,len(G_grad))
         print('D_parameters_grad ' ,len(D_grad))
-        print('G_parameters_grad[0].size() ' ,G_grad[0].size())
-        print('D_parameters_grad[0].size() ' ,D_grad[0].size())
+        print('G_parameters_grad[0][0].size() ' ,G_grad[0][0].size())
+        print('D_parameters_grad[0][0].size() ' ,D_grad[0][0].size())
 
         exit()
 
