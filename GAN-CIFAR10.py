@@ -40,8 +40,28 @@ def weights_init(m):
         nn.init.normal_(m.weight.data, 1.0, 0.02)
         nn.init.constant_(m.bias.data, 0)
 
-# Generator Code
+def DP_Normal(grads):
+    grad_normal = []
+    #batch_size == len(grads)
+    for i in range(len(grads)):
+        grad_x  = grads[i]
+        grad_x_normal = torch.tensor([0.0])
+        #parameters' grad
+        for j in len(grad_x):
+            grad_x_normal += (grad_x[j]*grad_x[j]).sum()
+        grad_normal.append(grad_x_normal)
+    
+    Cb = sum(grad_normal)/len(grads)
+    return Cb
 
+
+    
+
+            
+
+
+
+# Generator Code
 class Generator(nn.Module):
     def __init__(self, ngpu):
         super(Generator, self).__init__()
@@ -207,7 +227,6 @@ def train():
            # Update D      
            for parameters in netD.parameters():
                D_grad_batch.append(parameters.grad.clone().detach())
-               print('D' ,i)
            D_grad.append(D_grad_batch)
            optimizerD.step()
 
@@ -226,7 +245,6 @@ def train():
            # Update G
            for parameters in netG.parameters():
                G_grad_batch.append(parameters.grad.clone().detach())
-               print('G' ,i)
            G_grad.append(G_grad_batch)
            optimizerG.step()
 
@@ -235,13 +253,11 @@ def train():
                print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f'
                   % (epoch, num_epochs, i, batch_size,
                      sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
-
-        print('G_parameters_grad ' ,len(G_grad))
-        print('D_parameters_grad ' ,len(D_grad))
-        print('G_parameters_grad[0] ' ,len(G_grad[0]))
-        print('D_parameters_grad[0]' ,len(D_grad[0]))
-
-        exit()
+        
+        print(DP_Normal(G_grad))
+        print(DP_Normal(D_grad))
+        G_grad.clear()
+        D_grad.clear()
 
         # Save Losses for plotting later
         G_losses.append(sum(G_losses_batch).item()/batch_size)
