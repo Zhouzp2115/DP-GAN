@@ -202,7 +202,9 @@ def train():
            # Add the gradients from the all-real and all-fake batches
            errD = errD_real + errD_fake
            D_losses_batch.append(errD)
-           # Update D
+           # Update D      
+           for parameters in netD.parameters:
+               D_parameters_grad.append(parameters.grad.clone().detach())
            optimizerD.step()
 
            ############################
@@ -218,6 +220,8 @@ def train():
            errG.backward()
            G_losses_batch.append(errG)
            # Update G
+           for parameters in netG.parameters:
+               G_parameters_grad.append(parameters.grad.clone().detach())
            optimizerG.step()
 
            # Output training stats
@@ -225,10 +229,17 @@ def train():
                print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f'
                   % (epoch, num_epochs, i, batch_size,
                      sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
+        
+        print('G_parameters_grad ' ,len(G_parameters_grad))
+        print('D_parameters_grad ' ,len(D_parameters_grad))
+        print('G_parameters_grad[0].size() ' ,G_parameters_grad[0].size())
+        print('D_parameters_grad[0].size() ' ,D_parameters_grad[0].size())
+
+        exit()
 
         # Save Losses for plotting later
-        G_losses.append(sum(G_losses_batch).item())
-        D_losses.append(sum(D_losses_batch).item())
+        G_losses.append(sum(G_losses_batch).item()/batch_size)
+        D_losses.append(sum(D_losses_batch).item()/batch_size)
         G_losses_batch.clear()
         D_losses_batch.clear()
 
