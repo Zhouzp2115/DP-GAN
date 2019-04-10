@@ -156,16 +156,18 @@ def train():
     img_list = []
     G_losses = []
     D_losses = []
-    G_losses_batch = []
-    D_losses_batch = []
-    G_parameters_grad = []
-    D_parameters_grad = []
+    G_grad = []
+    D_grad = []
     iters = 0
 
     print("Starting Training Loop...")
     
     dataloader = iter(dataloader)
     for epoch in range(num_epochs):
+        G_losses_batch = []
+        D_losses_batch = []
+        G_grad_batch = []
+        D_grad_batch = []
         for i in range(1,batch_size+1):
            ############################
            # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
@@ -204,7 +206,7 @@ def train():
            D_losses_batch.append(errD)
            # Update D      
            for parameters in netD.parameters():
-               D_parameters_grad.append(parameters.grad.clone().detach())
+               D_grad_batch.append(parameters.grad.clone().detach())
            optimizerD.step()
 
            ############################
@@ -221,7 +223,7 @@ def train():
            G_losses_batch.append(errG)
            # Update G
            for parameters in netG.parameters():
-               G_parameters_grad.append(parameters.grad.clone().detach())
+               G_grad_batch.append(parameters.grad.clone().detach())
            optimizerG.step()
 
            # Output training stats
@@ -230,10 +232,14 @@ def train():
                   % (epoch, num_epochs, i, batch_size,
                      sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
         
-        print('G_parameters_grad ' ,len(G_parameters_grad))
-        print('D_parameters_grad ' ,len(D_parameters_grad))
-        print('G_parameters_grad[0].size() ' ,G_parameters_grad[0].size())
-        print('D_parameters_grad[0].size() ' ,D_parameters_grad[0].size())
+        G_grad.append(G_grad_batch)
+        D_grad.append(D_grad_batch)
+        G_grad_batch.clear()
+        D_grad_batch.clear()
+        print('G_parameters_grad ' ,len(G_grad))
+        print('D_parameters_grad ' ,len(D_grad))
+        print('G_parameters_grad[0].size() ' ,G_grad[0].size())
+        print('D_parameters_grad[0].size() ' ,D_grad[0].size())
 
         exit()
 
