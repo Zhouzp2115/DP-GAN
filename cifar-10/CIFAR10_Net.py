@@ -113,12 +113,12 @@ class CIFAR10_Net():
 
         self.G_losses = []
         self.D_losses = []
-        self.G_grad = []
-        self.D_grad = []
 
     def train(self ,batch_data):
         real_label = 1
         fake_label = 0
+        G_grad = []
+        D_grad = []
         G_grad_batch = []
         D_grad_batch = []
         G_losses_batch = []
@@ -145,9 +145,9 @@ class CIFAR10_Net():
             errD = errD_real + errD_fake
             D_losses_batch.append(errD)
    
-            #for parameters in self.netD.parameters():
-            #    D_grad_batch.append(parameters.grad.clone().detach())
-            #self.D_grad.append(D_grad_batch)
+            for parameters in self.netD.parameters():
+                D_grad_batch.append(parameters.grad.clone().detach())
+            D_grad.append(D_grad_batch)
             self.optimizerD.step()
 
             self.netG.zero_grad()
@@ -157,9 +157,9 @@ class CIFAR10_Net():
             errG.backward()
             G_losses_batch.append(errG)
 
-            #for parameters in self.netG.parameters():
-            #    G_grad_batch.append(parameters.grad.clone().detach())
-            #self.G_grad.append(G_grad_batch)
+            for parameters in self.netG.parameters():
+                G_grad_batch.append(parameters.grad.clone().detach())
+            G_grad.append(G_grad_batch)
             self.optimizerG.step()
  
             if i % 50 == 0:

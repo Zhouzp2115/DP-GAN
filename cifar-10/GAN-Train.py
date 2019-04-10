@@ -38,9 +38,11 @@ def train():
 
     Gan = CIFAR10_Net(2)
     for index, data in enumerate(trainloader):
-        print('batch_',index)
+        print('batch_', index)
         Gan.train(data[0])
     print('train over')
+    Gan.plotloss('loss.png')
+    Gan.save('netG.pt', 'netD.pt')
 
 
 if __name__ == '__main__':
