@@ -196,8 +196,8 @@ def train():
            ## Train with all-real batch
            netD.zero_grad()
            # Format batch
-           data ,label = next(dataloader)
-           print('label' ,label)
+           data  = next(dataloader)
+           print('data.size()' ,data.size())
 
            real_cpu = data[0].to(device)
            b_size = real_cpu.size(0)
