@@ -196,7 +196,9 @@ def train():
            ## Train with all-real batch
            netD.zero_grad()
            # Format batch
-           data = next(dataloader)
+           data ,label = next(dataloader)
+           print('label' ,label)
+
            real_cpu = data[0].to(device)
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
