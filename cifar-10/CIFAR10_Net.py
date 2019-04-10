@@ -122,7 +122,7 @@ class CIFAR10_Net():
         D_grad = self.D_grad[0]
 
         for i in range(1, len(self.G_grad)):
-            for j in range(len(G_grad)):
+            for j in range(len(G_grad[0])):
                 G_grad[j] += self.G_grad[i][j]
                 D_grad[j] += self.D_grad[i][j]
 
