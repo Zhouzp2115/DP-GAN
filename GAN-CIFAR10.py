@@ -236,8 +236,8 @@ def train():
 
         print('G_parameters_grad ' ,len(G_grad))
         print('D_parameters_grad ' ,len(D_grad))
-        print('G_parameters_grad[0][0].size() ' ,G_grad[0][0].size())
-        print('D_parameters_grad[0][0].size() ' ,D_grad[0][0].size())
+        print('G_parameters_grad[0] ' ,len(G_grad[0]))
+        print('D_parameters_grad[0]' ,len(D_grad[0]))
 
         exit()
 
