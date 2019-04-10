@@ -122,6 +122,7 @@ class CIFAR10_Net():
         #D_grad = sum(self.D_grad) / len(self.D_grad)
         print(len(self.G_grad))
         print(type(self.G_grad))
+        print(type(self.G_grad[0]))
         #print(G_grad.size())
         #print(D_grad.size())
 
