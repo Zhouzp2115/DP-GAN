@@ -35,7 +35,7 @@ def dataSort(root):
             res[label]['labels'].append(label)
 
     for i in range(10):
-        saveData(root + '../sorted', 'train_' + str(i), res[i])
+        saveData(root + '../sorted/', 'train_' + str(i), res[i])
 
 if __name__ == '__main__':
     dataSort('../data/cifar-10/cifar-10-batches-py/')
