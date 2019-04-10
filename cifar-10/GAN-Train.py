@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
 
-from CIFAR10-Net import CIFAR10_Net
+from CIFAR10_Net import CIFAR10_Net
 
 def dataClassify(root):
     transform = transforms.Compose(
