@@ -126,8 +126,8 @@ class CIFAR10_Net():
                 G_grad[j] += self.G_grad[i][j]
                 D_grad[j] += self.D_grad[i][j]
 
-        print(G_grad.size())
-        print(D_grad.size())
+        print(len(G_grad.size))
+        print(len(D_grad.size))
 
         self.G_grad.clear()
         self.D_grad.clear()
