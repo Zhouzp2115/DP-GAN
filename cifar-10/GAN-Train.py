@@ -19,7 +19,7 @@ from IPython.display import HTML
 import pickle
 
 from CIFAR10_Net import CIFAR10_Net
-from dataloader import  CIFARDataLoader
+from dataloader import CIFARDataLoader
 
 
 def train():
@@ -33,15 +33,14 @@ def train():
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    CIFARDataset = CIFARDataLoader(
-        '/home/zhouzp/MachineLearning/CIFAR10/cifar-10-batches-py/SortedData/TargetModel/trainset',
-        15000, transform)
+    CIFARDataset = CIFARDataLoader('../data/cifar-10/cifar-10-batches-py/sorted/train_0', 5000, transform)
     trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
     trainloader = iter(trainloader)
 
     data_batch = next(trainloader)
 
     print(type(data_batch))
+
 
 if __name__ == '__main__':
     train()
