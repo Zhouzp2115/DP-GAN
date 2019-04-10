@@ -33,7 +33,7 @@ def train():
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    CIFARDataset = CIFARDataLoader('../data/cifar-10/cifar-10-batches-py/sorted/train_0', transform)
+    CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_0', transform)
     trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
     trainloader = iter(trainloader)
 
