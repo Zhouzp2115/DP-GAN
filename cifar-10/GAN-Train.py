@@ -30,7 +30,7 @@ def dataClassify(root):
     dataset = dset.CIFAR10(root=root, train=True,
                                         download=True, transform=transform)
     dataloader = torch.utils.data.DataLoader(dataset, 1,
-                                          shuffle=True, num_workers=workers)
+                                          shuffle=True, num_workers=2)
     
     data = []
     for i in range(10):
