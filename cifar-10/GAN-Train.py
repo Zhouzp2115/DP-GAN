@@ -39,7 +39,8 @@ def train():
 
     data_batch = next(trainloader)
 
-    print(type(data_batch))
+    Gan = CIFAR10_Net(2)
+    Gan.train(data_batch)
 
 
 if __name__ == '__main__':
