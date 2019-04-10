@@ -68,7 +68,7 @@ def train():
     random.seed(manualSeed)
     torch.manual_seed(manualSeed)
     
-    dataSort('../data/cifar-10/')
+    dataSort('../data/cifar-10/cifar-10-batches-py/')
     
     
 
