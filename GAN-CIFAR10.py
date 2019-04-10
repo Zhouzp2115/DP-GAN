@@ -203,7 +203,7 @@ def train():
            errD = errD_real + errD_fake
            D_losses_batch.append(errD)
            # Update D      
-           for parameters in netD.parameters:
+           for parameters in netD.parameters():
                D_parameters_grad.append(parameters.grad.clone().detach())
            optimizerD.step()
 
@@ -220,7 +220,7 @@ def train():
            errG.backward()
            G_losses_batch.append(errG)
            # Update G
-           for parameters in netG.parameters:
+           for parameters in netG.parameters():
                G_parameters_grad.append(parameters.grad.clone().detach())
            optimizerG.step()
 
