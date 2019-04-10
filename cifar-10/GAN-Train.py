@@ -31,15 +31,16 @@ def dataClassify(root):
                                         download=True, transform=transform)
     dataloader = torch.utils.data.DataLoader(dataset, 1,
                                           shuffle=True, num_workers=2)
-    
+    print(len(dataloader))
     data = []
     for i in range(10):
         data.append([])
     
     for i,item in enumerate(dataloader):
         x,label = item
-        print(x.size() ,label)
-        data[label].append(x)
+        
+        if label==0 and len(data[0])<128:
+           data[label].append(x)
     
     return data
         
