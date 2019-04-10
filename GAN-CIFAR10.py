@@ -166,9 +166,9 @@ def train():
     for epoch in range(num_epochs):
         G_losses_batch = []
         D_losses_batch = []
-        G_grad_batch = []
-        D_grad_batch = []
         for i in range(1,batch_size+1):
+           G_grad_batch = []
+           D_grad_batch = []
            ############################
            # (1) Update D network: maximize log(D(x)) + log(1 - D(G(z)))
            ###########################
@@ -208,7 +208,6 @@ def train():
            for parameters in netD.parameters():
                D_grad_batch.append(parameters.grad.clone().detach())
            D_grad.append(D_grad_batch)
-           D_grad_batch.clear()
            optimizerD.step()
 
            ############################
@@ -227,7 +226,6 @@ def train():
            for parameters in netG.parameters():
                G_grad_batch.append(parameters.grad.clone().detach())
            G_grad.append(G_grad_batch)
-           G_grad_batch.clear()
            optimizerG.step()
 
            # Output training stats
