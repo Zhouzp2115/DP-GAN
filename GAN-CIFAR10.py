@@ -207,6 +207,7 @@ def train():
            # Update D      
            for parameters in netD.parameters():
                D_grad_batch.append(parameters.grad.clone().detach())
+               print('D' ,i)
            D_grad.append(D_grad_batch)
            optimizerD.step()
 
@@ -225,6 +226,7 @@ def train():
            # Update G
            for parameters in netG.parameters():
                G_grad_batch.append(parameters.grad.clone().detach())
+               print('G' ,i)
            G_grad.append(G_grad_batch)
            optimizerG.step()
 
