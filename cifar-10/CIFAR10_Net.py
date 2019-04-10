@@ -128,8 +128,7 @@ class CIFAR10_Net():
 
         i = 1
         for index,data in enumerate(batch_data):
-            print(index)
-            print(data.size())
+            data = data.reshape(1,3,32,32)
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
