@@ -47,7 +47,7 @@ def DP_Normal(grads):
         grad_x  = grads[i]
         grad_x_normal = torch.tensor([0.0])
         #parameters' grad
-        for j in len(grad_x):
+        for j in range(len(grad_x)):
             grad_x_normal += (grad_x[j]*grad_x[j]).sum()
         grad_normal.append(grad_x_normal)
     
@@ -146,6 +146,7 @@ def train():
     netD = Discriminator(ngpu).to(device)
 
     if (device.type == 'cuda') and (ngpu > 1):
+        print('DataParallel')
         netG = nn.DataParallel(netG, list(range(ngpu)))
         netD = nn.DataParallel(netD, list(range(ngpu)))
     
