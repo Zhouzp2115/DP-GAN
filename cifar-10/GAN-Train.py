@@ -16,33 +16,49 @@ import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
+import pickle
 
 from CIFAR10_Net import CIFAR10_Net
 
-def dataClassify(root):
-    transform = transforms.Compose(
-    [
-     transforms.RandomHorizontalFlip(),
-     transforms.RandomGrayscale(),
-     transforms.ToTensor(),
-     transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))])
 
-    dataset = dset.CIFAR10(root=root, train=True,
-                                        download=True, transform=transform)
-    dataloader = torch.utils.data.DataLoader(dataset, 1,
-                                          shuffle=True, num_workers=2)
-    print(len(dataloader))
+
+def unPickle(fileDir):
+    fo = open(fileDir, 'rb')
+    dict = pickle.load(fo, encoding='latin1')
+    return dict
+
+
+def saveData(dir, filename, dict):
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    if not os.path.exists(dir + filename):
+        os.system(r'touch {}'.format(dir + filename))
+
+    file = open(dir + filename, 'wb')
+    pickle.dump(dict, file)
+    print ('save file..........ok')
+
+def dataSort(root):
     data = []
+    for i in range(1,6):
+        data.append(unPickle(root+'data_batch_'+str(i)))
+    
+    res = []
     for i in range(10):
-        data.append([])
+        res.append({'data':[] ,'labels':[]})
     
-    for i,item in enumerate(dataloader):
-        x,label = item
-        
-        if label==0 and len(data[0])<128:
-           data[label].append(x)
+    for i in range(1,6):
+        for j in range(len(data[i]['data'])):
+            x = data[i]['data'][j]
+            label = data[i]['labels'][j]
+            res[label]['data'].append(x)
+            res[label]['labels'].append(label)
     
-    return data
+    for i in range(10):
+        saveData(root+'../' ,'train_'+str(i) ,res[i])    
+
+
+    
         
 
 
@@ -52,7 +68,7 @@ def train():
     random.seed(manualSeed)
     torch.manual_seed(manualSeed)
     
-    dataClassify('../data/cifar-10')
+    dataSort('../data/cifar-10/')
     
     
 
