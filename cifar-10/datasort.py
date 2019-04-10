@@ -18,7 +18,7 @@ def saveData(dir, filename, dict):
     print('save file..........ok')
 
 
-def dataSort(root):
+def trainSetSort(root):
     data = []
     for i in range(1, 6):
         data.append(unPickle(root + 'data_batch_' + str(i)))
@@ -38,4 +38,4 @@ def dataSort(root):
         saveData(root + '../sorted/', 'train_' + str(i), res[i])
 
 if __name__ == '__main__':
-    dataSort('../data/cifar-10/cifar-10-batches-py/')
+    trainSetSort('../data/cifar-10/cifar-10-batches-py/')
