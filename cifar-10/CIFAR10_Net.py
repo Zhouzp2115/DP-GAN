@@ -1,5 +1,5 @@
 from __future__ import print_function
-#%matplotlib inline
+# %matplotlib inline
 import argparse
 import os
 import random
@@ -29,6 +29,7 @@ lr = 0.0002
 beta1 = 0.5
 ngpu = 2
 
+
 # custom weights initialization called on netG and netD
 def weights_init(m):
     classname = m.__class__.__name__
@@ -38,6 +39,7 @@ def weights_init(m):
         nn.init.normal_(m.weight.data, 1.0, 0.02)
         nn.init.constant_(m.bias.data, 0)
 
+
 # Generator Code
 class Generator(nn.Module):
     def __init__(self, ngpu):
@@ -45,7 +47,7 @@ class Generator(nn.Module):
         self.ngpu = ngpu
         self.main = nn.Sequential(
             # input is Z, going into a convolution
-            nn.ConvTranspose2d( nz, ngf * 4, 4, 1, 0, bias=False),
+            nn.ConvTranspose2d(nz, ngf * 4, 4, 1, 0, bias=False),
             nn.BatchNorm2d(ngf * 4),
             nn.ReLU(True),
             # state size. (ngf*8) x 4 x 4
@@ -53,11 +55,11 @@ class Generator(nn.Module):
             nn.BatchNorm2d(ngf * 2),
             nn.ReLU(True),
             # state size. (ngf*4) x 8 x 8
-            nn.ConvTranspose2d( ngf * 2, ngf , 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(ngf * 2, ngf, 4, 2, 1, bias=False),
             nn.BatchNorm2d(ngf),
             nn.ReLU(True),
             # state size. (ngf*2) x 16 x 16
-            nn.ConvTranspose2d( ngf, nc, 4, 2, 1, bias=False),
+            nn.ConvTranspose2d(ngf, nc, 4, 2, 1, bias=False),
             nn.Tanh()
             # state size. (ngf) x 32 x 32
         )
@@ -90,9 +92,10 @@ class Discriminator(nn.Module):
     def forward(self, input):
         return self.main(input)
 
+
 class CIFAR10_Net():
-    def __init__(self ,ngpu):
-        self.device = torch.device("cuda:0" if(torch.cuda.is_available() and ngpu > 0) else "cpu")
+    def __init__(self, ngpu):
+        self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
         self.netG = Generator(ngpu).to(self.device)
         self.netD = Discriminator(ngpu).to(self.device)
 
@@ -114,28 +117,38 @@ class CIFAR10_Net():
         self.G_losses = []
         self.D_losses = []
 
-    def train(self ,batch_data):
+    def setgrad(self):
+        G_grad = sum(self.G_grad) / len(self.G_grad)
+        D_grad = sum(self.D_grad) / len(self.D_grad)
+
+        print(G_grad.size())
+        print(D_grad.size())
+
+        self.G_grad.clear()
+        self.D_grad.clear()
+
+    def train(self, batch_data):
         real_label = 1
         fake_label = 0
-        G_grad = []
-        D_grad = []
+        self.G_grad = []
+        self.D_grad = []
         G_grad_batch = []
         D_grad_batch = []
         G_losses_batch = []
         D_losses_batch = []
 
         i = 1
-        for index,data in enumerate(batch_data):
-            data = data.reshape(1,3,32,32)
+        for index, data in enumerate(batch_data):
+            data = data.reshape(1, 3, 32, 32)
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
-            
+
             self.netD.zero_grad()
             output = self.netD(real_cpu).view(-1)
             errD_real = self.criterion(output, label)
             errD_real.backward()
-           
+
             noise = torch.randn(b_size, nz, 1, 1, device=self.device)
             fake = self.netG(noise)
             label.fill_(fake_label)
@@ -144,14 +157,14 @@ class CIFAR10_Net():
             errD_fake.backward()
             errD = errD_real + errD_fake
             D_losses_batch.append(errD)
-   
+
             for parameters in self.netD.parameters():
                 D_grad_batch.append(parameters.grad.clone().detach())
-            D_grad.append(D_grad_batch)
+            self.D_grad.append(D_grad_batch)
             self.optimizerD.step()
 
             self.netG.zero_grad()
-            label.fill_(real_label)  
+            label.fill_(real_label)
             output = self.netD(fake).view(-1)
             errG = self.criterion(output, label)
             errG.backward()
@@ -159,28 +172,28 @@ class CIFAR10_Net():
 
             for parameters in self.netG.parameters():
                 G_grad_batch.append(parameters.grad.clone().detach())
-            G_grad.append(G_grad_batch)
+            self.G_grad.append(G_grad_batch)
             self.optimizerG.step()
- 
-            if i % 50 == 0:
-               print('Loss_D: %.4f\tLoss_G: %.4f'
-                  % (sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
-            i += 1
-        self.G_losses.append(sum(G_losses_batch).item()/(i-1))
-        self.D_losses.append(sum(D_losses_batch).item()/(i-1))
 
-    def plotloss(self ,file):
-        plt.figure(figsize=(10,5))
+            if i % 50 == 0:
+                print('Loss_D: %.4f\tLoss_G: %.4f'
+                      % (sum(D_losses_batch).item() / i, sum(G_losses_batch).item() / i))
+            i += 1
+
+        self.setgrad()
+        self.G_losses.append(sum(G_losses_batch).item() / (i - 1))
+        self.D_losses.append(sum(D_losses_batch).item() / (i - 1))
+
+    def plotloss(self, file):
+        plt.figure(figsize=(10, 5))
         plt.title("Generator and Discriminator Loss During Training")
-        plt.plot(self.G_losses,label="G")
-        plt.plot(self.D_losses,label="D")
+        plt.plot(self.G_losses, label="G")
+        plt.plot(self.D_losses, label="D")
         plt.xlabel("iterations")
         plt.ylabel("Loss")
         plt.legend()
         plt.savefig(file)
 
-    def save(self ,fileG ,fileD):
-        torch.save(self.netD ,fileD)
-        torch.save(self.netG ,fileG)
-
-
+    def save(self, fileG, fileD):
+        torch.save(self.netD, fileD)
+        torch.save(self.netG, fileG)
