@@ -168,6 +168,7 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_batch.append(parameters.grad.clone().detach())
+                print('count ....netD')
             self.D_grad.append(D_grad_batch)
             self.optimizerD.step()
 
@@ -180,6 +181,7 @@ class CIFAR10_Net():
 
             for parameters in self.netG.parameters():
                 G_grad_batch.append(parameters.grad.clone().detach())
+                print('count ....netG')
             self.G_grad.append(G_grad_batch)
             self.optimizerG.step()
 
