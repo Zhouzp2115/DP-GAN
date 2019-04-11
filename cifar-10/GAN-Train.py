@@ -51,7 +51,7 @@ class TrainThread(threading.Thread):
 
         Gan = CIFAR10_Net(self.model_num, self.start_num, self.end_num)
 
-        return 
+        return
 
         G_loss = []
         D_loss = []
@@ -81,7 +81,7 @@ class TrainThread(threading.Thread):
 if __name__ == '__main__':
     threads = []
     for i in range(4):
-        thread = TrainThread(i)
+        thread = TrainThread(i, 0, 4)
         thread.start()
         threads.append(thread)
 
