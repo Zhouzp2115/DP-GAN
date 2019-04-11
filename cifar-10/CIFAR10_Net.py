@@ -134,7 +134,16 @@ class CIFAR10_Net():
             parameter.grad = grad_sum[index]
             index += 1
 
+    
+    def adjust_learning_rate(self ,epoch):
+        print('lr ',lr)
+        if epoch == 30:
+           lr = lr * 0.9 
+        for param_group in self.optimizerD.param_groups:
+            param_group['lr'] = lr
 
+        for param_group in self.optimizerG.param_groups:
+            param_group['lr'] = lr
         
        
     def train(self, batch_data):
