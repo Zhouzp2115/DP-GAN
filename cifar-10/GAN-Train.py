@@ -33,7 +33,7 @@ class TrainThread(threading.Thread):
         self.end_num = end_num
 
     def run(self):
-        self.train(self)
+        self.train()
 
     def train(self):
         manualSeed = 999
