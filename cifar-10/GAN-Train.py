@@ -24,64 +24,47 @@ from CIFAR10_Net import CIFAR10_Net
 from dataloader import CIFARDataLoader
 
 
-class TrainThread(threading.Thread):
-    def __init__(self, model_num, start_num, end_num):
-        threading.Thread.__init__(self)
+def train(model_num, start_num, end_num):
+    manualSeed = 999
+    print("random seed:", manualSeed)
+    random.seed(manualSeed)
+    torch.manual_seed(manualSeed)
 
-        self.model_num = model_num
-        self.start_num = start_num
-        self.end_num = end_num
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
 
-    def run(self):
-        self.train()
+    CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(self.model_num), transform)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=30, shuffle=True, num_workers=2)
 
-    def train(self):
-        manualSeed = 999
-        print("random seed:", manualSeed)
-        random.seed(manualSeed)
-        torch.manual_seed(manualSeed)
+    Gan = CIFAR10_Net(model_num, start_num, end_num)
 
-        transform = transforms.Compose([
-            transforms.ToTensor(),
-            transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
-        ])
+    G_loss = []
+    D_loss = []
+    epoch_num = 30
+    for epoch in range(epoch_num):
+        for index, data in enumerate(trainloader):
+            # print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
+            # Gan.adjust_learning_rate(index+1)
+            Gan.train(data[0])
 
-        CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(self.model_num), transform)
-        trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=30, shuffle=True, num_workers=2)
+            if (index + 1) % 20 == 0:
+                G_loss.append(sum(Gan.G_losses) / 20)
+                D_loss.append(sum(Gan.D_losses) / 20)
+                Gan.G_losses.clear()
+                Gan.D_losses.clear()
+                print('model_%d [%d/%d] batch_%d' % (self.model_num, epoch, epoch_num, index))
+                print('Loss_D: %.4f\tLoss_G: %.4f' % (D_loss[-1], G_loss[-1]))
 
-        Gan = CIFAR10_Net(self.model_num, self.start_num, self.end_num)
-
-        G_loss = []
-        D_loss = []
-        epoch_num = 30
-        for epoch in range(epoch_num):
-            for index, data in enumerate(trainloader):
-                # print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
-                # Gan.adjust_learning_rate(index+1)
-                Gan.train(data[0])
-
-                if (index + 1) % 20 == 0:
-                    G_loss.append(sum(Gan.G_losses) / 20)
-                    D_loss.append(sum(Gan.D_losses) / 20)
-                    Gan.G_losses.clear()
-                    Gan.D_losses.clear()
-                    print('model_%d [%d/%d] batch_%d' % (self.model_num, epoch, epoch_num, index))
-                    print('Loss_D: %.4f\tLoss_G: %.4f' % (D_loss[-1], G_loss[-1]))
-
-        print('train over')
-        Gan.G_losses = G_loss
-        Gan.D_losses = D_loss
-        Gan.plotloss('loss_' + str(self.model_num) + '.png')
-        Gan.plotfake('fakeimg_' + str(self.model_num) + '.png')
-        torch.save(Gan ,'Gan_'+str(self.model_num)+'.pt')
+    print('train over')
+    Gan.G_losses = G_loss
+    Gan.D_losses = D_loss
+    Gan.plotloss('loss_' + str(self.model_num) + '.png')
+    Gan.plotfake('fakeimg_' + str(self.model_num) + '.png')
+    torch.save(Gan, 'Gan_' + str(self.model_num) + '.pt')
 
 
 if __name__ == '__main__':
-    threads = []
     for i in range(4):
-        thread = TrainThread(i, 0, 4)
-        thread.start()
-        threads.append(thread)
-
-    for i in range(4):
-        threads[i].join()
+        train(i, 0, 3)

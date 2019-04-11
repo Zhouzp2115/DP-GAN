@@ -99,7 +99,7 @@ class CIFAR10_Net():
             print('cuda:0 ', model_num)
         else:
             self.device = torch.device("cuda:0")
-            print('cuda:1 ', model_num)
+            print('cuda:0 ', model_num)
         # self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
         self.netG = Generator().to(self.device)
         self.netD = Discriminator().to(self.device)
