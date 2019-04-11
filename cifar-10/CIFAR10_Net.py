@@ -164,7 +164,7 @@ class CIFAR10_Net():
         D_grad = []
         G_losses_batch = []
         D_losses_batch = []
-        fake = []
+        noise = []
 
         for index, data in enumerate(batch_data):
             D_grad_item = []
@@ -174,15 +174,16 @@ class CIFAR10_Net():
             label = torch.full((b_size,), real_label, device=self.device)
 
             self.netD.zero_grad()
+            self.netG.zero_grad()
             output = self.netD(real_cpu).view(-1)
             errD_real = self.criterion(output, label)
             errD_real.backward()
 
-            noise = torch.randn(b_size, nz, 1, 1, device=self.device)
-            fake.append(self.netG(noise))
+            noise.append(torch.randn(b_size, nz, 1, 1, device=self.device))
+            fake = self.netG(noise[index])
             
             label.fill_(fake_label)
-            output = self.netD(fake[index].detach()).view(-1)
+            output = self.netD(fake.detach()).view(-1)
             errD_fake = self.criterion(output, label)
             errD_fake.backward()
             errD = errD_real + errD_fake
@@ -205,9 +206,10 @@ class CIFAR10_Net():
             
             self.netG.zero_grad()
             self.netD.zero_grad()
-            
+
             label.fill_(real_label)
-            output = self.netD(fake[index]).view(-1)
+            fake = self.netG(noise[index])
+            output = self.netD(fake).view(-1)
             errG = self.criterion(output, label)
             errG.backward()
             G_losses_batch.append(errG)
