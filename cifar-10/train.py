@@ -58,21 +58,20 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-
     for index, data in enumerate(trainloader, 0):
         inputs, labels = data
         if torch.cuda.is_available():
             inputs = inputs.cuda()
             labels = labels.cuda()
-        optimizer.zero_grad()
+        net.zero_grad()
         outputs = net(inputs)
         loss = criterion(outputs, labels)
         loss.backward()
         optimizer.step()
 
-        print('batch_%d loss: '%(index,loss.item()))
+        print('batch_%d loss: ' % (index, loss.item()))
 
-print('Finished Training')
+    print('Finished Training')
 
-torch.save(net, 'cifar-net.pt')
-print('save model ..... OK')
+    torch.save(net, 'cifar-net.pt')
+    print('save model ..... OK')

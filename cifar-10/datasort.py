@@ -1,6 +1,7 @@
 import pickle
 import os
 
+
 def unPickle(fileDir):
     fo = open(fileDir, 'rb')
     dict = pickle.load(fo, encoding='latin1')
@@ -36,6 +37,17 @@ def trainSetSort(root):
 
     for i in range(10):
         saveData(root + '../sorted/', 'train_' + str(i), res[i])
+
+
+def testSetSort(root):
+    data = unPickle(root + 'test_batch')
+    res = {'data': [], 'labels': []}
+
+    res['data'] = data['data']
+    res['labels'] = data['labels']
+
+    saveData(root + '../sorted/', 'test', res)
+
 
 if __name__ == '__main__':
     trainSetSort('../data/cifar-10/cifar-10-batches-py/')
