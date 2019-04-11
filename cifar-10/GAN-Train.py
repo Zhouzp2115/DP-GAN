@@ -34,14 +34,14 @@ def train():
     ])
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_0', transform)
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=10, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=1, shuffle=True, num_workers=2)
 
     Gan = CIFAR10_Net(2)
     
     epoch_num = 5
     for epoch in range(epoch_num):
       for index, data in enumerate(trainloader):
-        print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
+        #print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
         #Gan.adjust_learning_rate(index+1)
         Gan.train(data[0])
         
