@@ -181,7 +181,7 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
-                parameters.grad.zero_()
+                #parameters.grad.zero_()
             self.D_grad.append(D_grad_item)
             self.optimizerD.step()
 
@@ -194,7 +194,7 @@ class CIFAR10_Net():
 
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
-                parameters.grad.zero_()
+                #parameters.grad.zero_()
             self.G_grad.append(G_grad_item)
             self.optimizerG.step()
 
