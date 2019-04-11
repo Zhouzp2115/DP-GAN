@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
 import pickle
-import thread
+import _thread
 
 from CIFAR10_Net import CIFAR10_Net
 from dataloader import CIFARDataLoader
@@ -66,4 +66,4 @@ def train(model_num):
 
 if __name__ == '__main__':
     for i in range(10):
-          thread.start_new_thread(train ,(i))
+          _thread.start_new_thread(train ,(i))
