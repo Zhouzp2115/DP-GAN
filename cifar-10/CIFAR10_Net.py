@@ -136,6 +136,7 @@ class CIFAR10_Net():
 
     
     def adjust_learning_rate(self ,epoch):
+        global lr
         print('lr ',lr)
         if epoch == 30:
            lr = lr * 0.9 
