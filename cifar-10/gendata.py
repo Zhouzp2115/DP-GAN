@@ -30,4 +30,4 @@ if __name__ == "__main__":
             fake['data'].append(x.cpu())
             fake['label'].append(label)
 
-    saveData('../data/cifar-10/sorted/', '0-4_fake')
+    saveData('../data/cifar-10/sorted/', '0-9_fake')

@@ -60,9 +60,9 @@ def train(model_num, start_num, end_num):
     print('train over')
     Gan.G_losses = G_loss
     Gan.D_losses = D_loss
-    Gan.plotloss('loss_' + str(self.model_num) + '.png')
-    Gan.plotfake('fakeimg_' + str(self.model_num) + '.png')
-    torch.save(Gan, 'Gan_' + str(self.model_num) + '.pt')
+    Gan.plotloss('loss_' + str(model_num) + '.png')
+    Gan.plotfake('fakeimg_' + str(model_num) + '.png')
+    torch.save(Gan, 'Gan_' + str(model_num) + '.pt')
 
 
 if __name__ == '__main__':
