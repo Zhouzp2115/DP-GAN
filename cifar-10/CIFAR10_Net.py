@@ -25,8 +25,8 @@ nz = 100
 ngf = 32
 ndf = 32
 num_epochs = 50
-#lr = 0.0002
-lr = 0.001
+lr = 0.0002
+#lr = 0.001
 beta1 = 0.5
 ngpu = 2
 
@@ -122,9 +122,6 @@ class CIFAR10_Net():
     def setgrad(self ,grads ,model):
         grad_sum = grads[0]
         
-        print(len(grads))
-        print(len(grad_sum))
-        
         for i in range(1, len(grads)):
             for j in range(len(grad_sum)):
                grad_sum[j] = grad_sum[j] + grads[i][j]
@@ -135,7 +132,6 @@ class CIFAR10_Net():
         index = 0
         for parameter in model.parameters():
             parameter.grad = grad_sum[index]
-            print(index)
             index += 1
 
 
