@@ -51,7 +51,8 @@ class TrainThread(threading.Thread):
 
         Gan = CIFAR10_Net(self.model_num, self.start_num, self.end_num)
 
-        return
+        if self.model_num != 0:
+            return
 
         G_loss = []
         D_loss = []
