@@ -34,7 +34,7 @@ def train():
     ])
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_0', transform)
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=1, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=50, shuffle=True, num_workers=2)
 
     Gan = CIFAR10_Net(2)
     
@@ -46,6 +46,7 @@ def train():
         Gan.train(data[0])
         
         if (index+1) % 50 == 0:
+            print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
             print('Loss_D: %.4f\tLoss_G: %.4f'% 
                 (sum(Gan.D_losses[len(Gan.D_losses)-50:])/50, sum(Gan.G_losses[len(Gan.G_losses)-50:])/50))
 
