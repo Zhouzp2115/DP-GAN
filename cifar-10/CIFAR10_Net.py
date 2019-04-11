@@ -119,7 +119,7 @@ class CIFAR10_Net():
         self.D_losses = []
     
     #[[],.....[]]
-    def setgrad(self ,grads):
+    def setgrad(self ,grads ,model):
         grad_sum = grads[0]
         
         print(len(grads))
@@ -129,7 +129,17 @@ class CIFAR10_Net():
             for j in range(len(grad_sum)):
                grad_sum[j] = grad_sum[j] + grads[i][j]
         
-        exit()
+        for i in range(len(grad_sum)):
+            grad_sum[i] = grad_sum[i]/len(grads)
+        
+        index = 0
+        for parameter in model.parameters():
+            parameter.grad = grad_sum[index]
+            print(index)
+            index += 1
+
+
+        
        
     def train(self, batch_data):
         real_label = 1
@@ -167,7 +177,7 @@ class CIFAR10_Net():
             D_grad.append(D_grad_item)
             self.optimizerD.step()
         
-        self.setgrad(D_grad)
+        self.setgrad(D_grad,self.netD)
 
         for index, data in enumerate(batch_data):
             G_grad_item = []
@@ -192,7 +202,7 @@ class CIFAR10_Net():
                 print('Loss_D: %.4f\tLoss_G: %.4f'
                       % (sum(D_losses_batch).item() / (index+1), sum(G_losses_batch).item() / (index+1)))
         
-        self.setgrad(G_grad)
+        self.setgrad(G_grad,self.netG)
 
         self.G_losses.append(sum(G_losses_batch).item() / len(G_losses_batch))
         self.D_losses.append(sum(D_losses_batch).item() / len(D_losses_batch))
