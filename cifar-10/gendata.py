@@ -18,16 +18,16 @@ def saveData(dir, filename, dict):
 
 if __name__ == "__main__":
     nets = []
-    for i in range(4):
+    for i in range(10):
         nets.append(torch.load('Gan_' + str(i) + '.pt'))
 
     fake = {'data': [], 'labels': []}
     for i in range(5000):
-        for j in range(4):
+        for j in range(10):
             noise = torch.randn(1, 100, 1, 1, device=nets[j].device)
             x = nets[j].netG(noise)
             label = j
             fake['data'].append(x.cpu())
             fake['labels'].append(label)
 
-    saveData('../data/cifar-10/sorted/', '0-9_fake')
+    saveData('../data/cifar-10/sorted/', '0-9_fake' ,fake)
