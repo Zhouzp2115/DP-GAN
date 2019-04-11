@@ -129,8 +129,8 @@ class CIFAR10_Net():
             for j in range(len(grad_sum)):
                grad_sum[j] = grad_sum[j] + grads[i][j]
         
-        for i in range(len(grad_sum)):
-            grad_sum[i] = grad_sum[i]/len(grads)
+        #for i in range(len(grad_sum)):
+        #    grad_sum[i] = grad_sum[i]/len(grads)
         
         index = 0
         for parameter in model.parameters():
