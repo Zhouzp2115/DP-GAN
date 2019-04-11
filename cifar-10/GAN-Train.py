@@ -39,7 +39,7 @@ def train():
     Gan = CIFAR10_Net(2)
     for index, data in enumerate(trainloader):
         print('batch_', index)
-        Gan.adjust_learning_rate(index)
+        Gan.adjust_learning_rate(index+1)
         Gan.train(data[0])
     print('train over')
     Gan.plotloss('loss.png')
