@@ -122,17 +122,30 @@ class CIFAR10_Net():
         G_grad_sum = self.G_grad[0]
         D_grad_sum = self.D_grad[0]
         
-        print(type(G_grad_sum[0]))
-        #for i in range(1, len(self.G_grad)):
-        #    for j in range(len(G_grad[0])):
-        #        G_grad[j] += self.G_grad[i][j]
-        #        D_grad[j] += self.D_grad[i][j]
+        for i in range(1, len(self.G_grad)):
+            for j in range(len(G_grad_sum[0])):
+                G_grad_sum[j] += self.G_grad[i][j]
+                D_grad_sum[j] += self.D_grad[i][j]
+        
+        for i in range(len(G_grad_sum)):
+            G_grad_sum[i] = G_grad_sum[i] / len(self.G_grad)
 
-        print(len(G_grad_sum))
-        print(len(D_grad_sum))
+        for i in range(len(D_grad_sum)):
+            D_grad_sum[i] = D_grad_sum[i] / len(self.D_grad)
 
         self.G_grad.clear()
         self.D_grad.clear()
+        
+        index = 0
+        for parameter in self.G_grad.parameters():
+            print(parameter.grad.requires_grad)
+            #parameter.grad = G_grad_sum[index]
+            parameter.grad.zero_()
+        index = 0
+        for parameter in self.D_grad.parameters():
+            print(parameter.grad.requires_grad)
+            #parameter.grad = D_grad_sum[index]
+            parameter.grad.zero_()
 
     def train(self, batch_data):
         real_label = 1
@@ -168,6 +181,7 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
+                parameters.grad.zero_()
             self.D_grad.append(D_grad_item)
             self.optimizerD.step()
 
@@ -180,6 +194,7 @@ class CIFAR10_Net():
 
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
+                parameters.grad.zero_()
             self.G_grad.append(G_grad_item)
             self.optimizerG.step()
 
