@@ -175,9 +175,9 @@ class CIFAR10_Net():
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
             D_grad.append(D_grad_item)
-            self.optimizerD.step()
-        
+            
         self.setgrad(D_grad,self.netD)
+        self.optimizerD.step()
 
         for index, data in enumerate(batch_data):
             G_grad_item = []
@@ -196,13 +196,13 @@ class CIFAR10_Net():
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
             G_grad.append(G_grad_item)
-            self.optimizerG.step()
-
+            
             if (index+1) % 50 == 0:
                 print('Loss_D: %.4f\tLoss_G: %.4f'
                       % (sum(D_losses_batch).item() / (index+1), sum(G_losses_batch).item() / (index+1)))
         
         self.setgrad(G_grad,self.netG)
+        self.optimizerG.step()
 
         self.G_losses.append(sum(G_losses_batch).item() / len(G_losses_batch))
         self.D_losses.append(sum(D_losses_batch).item() / len(D_losses_batch))
