@@ -25,7 +25,7 @@ from dataloader import CIFARDataLoader
 
 
 class TrainThread(threading.Thread):
-    def __init__(self ,model_num):
+    def __init__(self, model_num):
         threading.Thread.__init__(self)
 
         self.model_num = model_num
@@ -33,7 +33,7 @@ class TrainThread(threading.Thread):
     def run(self):
         self.train(self.model_num)
 
-    def train(model_num):
+    def train(self, model_num):
         manualSeed = 999
         print("random seed:", manualSeed)
         random.seed(manualSeed)
@@ -84,5 +84,3 @@ if __name__ == '__main__':
     while True:
         print('sleep')
         time.sleep(1)
-
-
