@@ -119,16 +119,17 @@ class CIFAR10_Net():
         self.D_losses = []
 
     def setgrad(self):
-        G_grad = self.G_grad[0]
-        D_grad = self.D_grad[0]
+        G_grad_sum = self.G_grad[0]
+        D_grad_sum = self.D_grad[0]
+        
+        print(type(G_grad_sum[0]))
+        #for i in range(1, len(self.G_grad)):
+        #    for j in range(len(G_grad[0])):
+        #        G_grad[j] += self.G_grad[i][j]
+        #        D_grad[j] += self.D_grad[i][j]
 
-        for i in range(1, len(self.G_grad)):
-            for j in range(len(G_grad[0])):
-                G_grad[j] += self.G_grad[i][j]
-                D_grad[j] += self.D_grad[i][j]
-
-        print(len(G_grad))
-        print(len(D_grad))
+        print(len(G_grad_sum))
+        print(len(D_grad_sum))
 
         self.G_grad.clear()
         self.D_grad.clear()
