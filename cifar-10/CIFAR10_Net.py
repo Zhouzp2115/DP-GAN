@@ -139,13 +139,13 @@ class CIFAR10_Net():
         fake_label = 0
         self.G_grad = []
         self.D_grad = []
-        G_grad_batch = []
-        D_grad_batch = []
         G_losses_batch = []
         D_losses_batch = []
 
         i = 1
         for index, data in enumerate(batch_data):
+            G_grad_item = []
+            D_grad_item = []
             data = data.reshape(1, 3, 32, 32)
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
@@ -167,9 +167,8 @@ class CIFAR10_Net():
             D_losses_batch.append(errD)
 
             for parameters in self.netD.parameters():
-                D_grad_batch.append(parameters.grad.clone().detach())
-                print('count ....netD')
-            self.D_grad.append(D_grad_batch)
+                D_grad_item.append(parameters.grad.clone().detach())
+            self.D_grad.append(D_grad_item)
             self.optimizerD.step()
 
             self.netG.zero_grad()
@@ -180,12 +179,9 @@ class CIFAR10_Net():
             G_losses_batch.append(errG)
 
             for parameters in self.netG.parameters():
-                G_grad_batch.append(parameters.grad.clone().detach())
-                print('count ....netG')
-            self.G_grad.append(G_grad_batch)
+                G_grad_item.append(parameters.grad.clone().detach())
+            self.G_grad.append(G_grad_item)
             self.optimizerG.step()
-
-            exit()
 
             if i % 50 == 0:
                 print('Loss_D: %.4f\tLoss_G: %.4f'
