@@ -65,5 +65,12 @@ def train(model_num):
 
 
 if __name__ == '__main__':
-    for i in range(10):
+    try:
+       for i in range(10):
           _thread.start_new_thread(train ,(i,))
+
+    except:
+      print ("Error:start thread")
+    
+    while True:
+      pass
