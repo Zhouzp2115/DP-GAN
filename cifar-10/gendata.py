@@ -1,18 +1,6 @@
 import pickle
 import os
 import torch
-import torch.nn as nn
-import torch.nn.parallel
-import torch.backends.cudnn as cudnn
-import torch.optim as optim
-import torch.utils.data
-import torchvision.datasets as dset
-import torchvision.transforms as transforms
-import torchvision.utils as vutils
-import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from IPython.display import HTML
 
 from CIFAR10_Net import CIFAR10_Net
 
@@ -36,6 +24,10 @@ if __name__ == "__main__":
     fake = {'data': [], 'labels': []}
     for i in range(5000):
         for j in range(4):
-            noise = torch.randn(1, 100, 1, 1).cuda()
+            noise = torch.randn(1, 100, 1, 1, device=nets[j].device)
             x = nets[j](noise)
+            label = j
+            fake['data'].append(x.cpu())
+            fake['label'].append(label)
 
+    saveData('../data/cifar-10/sorted/', '0-4_fake')

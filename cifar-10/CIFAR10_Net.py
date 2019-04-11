@@ -14,8 +14,7 @@ import torchvision.transforms as transforms
 import torchvision.utils as vutils
 import numpy as np
 import matplotlib.pyplot as plt
-import matplotlib.animation as animation
-from IPython.display import HTML
+
 
 dataroot = 'data/celeba'
 workers = 2
@@ -99,7 +98,7 @@ class CIFAR10_Net():
             self.device = torch.device("cuda:0")
             print('cuda:0 ', model_num)
         else:
-            self.device = torch.device("cuda:1")
+            self.device = torch.device("cuda:0")
             print('cuda:1 ', model_num)
         # self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
         self.netG = Generator().to(self.device)
