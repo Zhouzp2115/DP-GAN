@@ -204,6 +204,8 @@ class CIFAR10_Net():
             label = torch.full((b_size,), real_label, device=self.device)
             
             self.netG.zero_grad()
+            self.netD.zero_grad()
+            
             label.fill_(real_label)
             output = self.netD(fake[index]).view(-1)
             errG = self.criterion(output, label)
