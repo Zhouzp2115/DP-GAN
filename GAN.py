@@ -129,6 +129,9 @@ def train():
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=2, normalize=True).cpu(),(1,2,0)))
     plt.savefig('dcgan/TrainImg.png')
     #plt.show()
+    
+    #print data from dataloader
+    print(real_batch[0].to(device)[:64])
 
     netG = Generator(ngpu).to(device)
     netD = Discriminator(ngpu).to(device)
@@ -183,7 +186,10 @@ def train():
            real_cpu = data[0].to(device)
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
-
+           
+           #print data from  in train
+           print(real_cpu)
+           
            # Forward pass real batch through D
            output = netD(real_cpu).view(-1)
            errD_real = criterion(output, label)
@@ -197,6 +203,10 @@ def train():
         
            # Generate fake image batch with G
            fake = netG(noise)
+
+           #print fake  in train
+           print(fake)
+           exit()
 
            label.fill_(fake_label)
            # Classify all fake batch with D
