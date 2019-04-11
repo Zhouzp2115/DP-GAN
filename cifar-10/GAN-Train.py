@@ -17,7 +17,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
 import pickle
-import _thread
+import threading
 import time
 
 from CIFAR10_Net import CIFAR10_Net
