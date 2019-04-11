@@ -26,7 +26,7 @@ ngf = 32
 ndf = 32
 num_epochs = 50
 lr = 0.0002
-#lr = 0.001
+# lr = 0.001
 beta1 = 0.5
 ngpu = 2
 
@@ -43,9 +43,8 @@ def weights_init(m):
 
 # Generator Code
 class Generator(nn.Module):
-    def __init__(self, ngpu):
+    def __init__(self):
         super(Generator, self).__init__()
-        self.ngpu = ngpu
         self.main = nn.Sequential(
             # input is Z, going into a convolution
             nn.ConvTranspose2d(nz, ngf * 4, 4, 1, 0, bias=False),
@@ -70,9 +69,8 @@ class Generator(nn.Module):
 
 
 class Discriminator(nn.Module):
-    def __init__(self, ngpu):
+    def __init__(self):
         super(Discriminator, self).__init__()
-        self.ngpu = ngpu
         self.main = nn.Sequential(
             # input is (nc) x 32 x 32
             nn.Conv2d(nc, ndf, 4, 2, 1, bias=False),
@@ -102,10 +100,10 @@ class CIFAR10_Net():
         else:
             self.device = torch.device("cuda:1")
         # self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
-        self.netG = Generator(ngpu).to(self.device)
-        self.netD = Discriminator(ngpu).to(self.device)
+        self.netG = Generator().to(self.device)
+        self.netD = Discriminator().to(self.device)
 
-        #if (self.device.type == 'cuda') and (ngpu > 1):
+        # if (self.device.type == 'cuda') and (ngpu > 1):
         #    print('DataParallel')
         #    self.netG = nn.DataParallel(self.netG, list(range(ngpu)))
         #    self.netD = nn.DataParallel(self.netD, list(range(ngpu)))
@@ -128,40 +126,38 @@ class CIFAR10_Net():
 
         self.fixed_noise = torch.randn(64, nz, 1, 1, device=self.device)
         self.img_list = []
-    
-    #[[],.....[]]
-    def setgrad(self ,grads ,model):
+
+    # [[],.....[]]
+    def setgrad(self, grads, model):
         grad_sum = grads[0]
-        
+
         for i in range(1, len(grads)):
             for j in range(len(grad_sum)):
-               grad_sum[j] = grad_sum[j] + grads[i][j]
-        
+                grad_sum[j] = grad_sum[j] + grads[i][j]
+
         for i in range(len(grad_sum)):
-            grad_sum[i] = grad_sum[i]/len(grads)
-        
+            grad_sum[i] = grad_sum[i] / len(grads)
+
         index = 0
         for parameter in model.parameters():
             parameter.grad = grad_sum[index]
             index += 1
 
-    
-    def adjust_learning_rate(self ,epoch):
-        print('G_lr ',self.G_lr)
-        print('D_lr ',self.D_lr)
+    def adjust_learning_rate(self, epoch):
+        print('G_lr ', self.G_lr)
+        print('D_lr ', self.D_lr)
         if epoch % 10 == 0:
-           self.G_lr = self.G_lr * 0.9 
-           self.D_lr = self.D_lr * 0.9
+            self.G_lr = self.G_lr * 0.9
+            self.D_lr = self.D_lr * 0.9
         else:
-           return 
+            return
 
         for param_group in self.optimizerD.param_groups:
             param_group['lr'] = self.D_lr
 
         for param_group in self.optimizerG.param_groups:
             param_group['lr'] = self.G_lr
-        
-       
+
     def train(self, batch_data):
         real_label = 1
         fake_label = 0
@@ -186,7 +182,7 @@ class CIFAR10_Net():
 
             noise.append(torch.randn(b_size, nz, 1, 1, device=self.device))
             fake = self.netG(noise[index])
-            
+
             label.fill_(fake_label)
             output = self.netD(fake.detach()).view(-1)
             errD_fake = self.criterion(output, label)
@@ -197,9 +193,9 @@ class CIFAR10_Net():
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
             D_grad.append(D_grad_item)
-            #self.optimizerD.step()
-            
-        self.setgrad(D_grad,self.netD)
+            # self.optimizerD.step()
+
+        self.setgrad(D_grad, self.netD)
         self.optimizerD.step()
 
         for index, data in enumerate(batch_data):
@@ -208,7 +204,7 @@ class CIFAR10_Net():
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
-            
+
             self.netG.zero_grad()
             self.netD.zero_grad()
 
@@ -222,13 +218,13 @@ class CIFAR10_Net():
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
             G_grad.append(G_grad_item)
-            
-            #if (index+1) % 50 == 0:
+
+            # if (index+1) % 50 == 0:
             #    print('Loss_D: %.4f\tLoss_G: %.4f'
             #          % (sum(D_losses_batch).item() / (index+1), sum(G_losses_batch).item() / (index+1)))
-            #self.optimizerG.step()
-        
-        self.setgrad(G_grad,self.netG)
+            # self.optimizerG.step()
+
+        self.setgrad(G_grad, self.netG)
         self.optimizerG.step()
 
         self.G_losses.append(sum(G_losses_batch).item() / len(G_losses_batch))
@@ -244,15 +240,15 @@ class CIFAR10_Net():
         plt.legend()
         plt.savefig(file)
 
-    def plotfake(self ,file):
+    def plotfake(self, file):
         with torch.no_grad():
             fake = self.netG(self.fixed_noise).detach().cpu()
             self.img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
-        
-        plt.subplot(1,2,2)
+
+        plt.subplot(1, 2, 2)
         plt.axis("off")
         plt.title("Fake Images")
-        plt.imshow(np.transpose(self.img_list[-1],(1,2,0)))
+        plt.imshow(np.transpose(self.img_list[-1], (1, 2, 0)))
         plt.savefig(file)
 
     def save(self, fileG, fileD):
