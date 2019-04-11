@@ -25,15 +25,17 @@ from dataloader import CIFARDataLoader
 
 
 class TrainThread(threading.Thread):
-    def __init__(self, model_num):
+    def __init__(self, model_num, start_num, end_num):
         threading.Thread.__init__(self)
 
         self.model_num = model_num
+        self.start_num = start_num
+        self.end_num = end_num
 
     def run(self):
-        self.train(self.model_num)
+        self.train(self)
 
-    def train(self, model_num):
+    def train(self):
         manualSeed = 999
         print("random seed:", manualSeed)
         random.seed(manualSeed)
@@ -44,10 +46,12 @@ class TrainThread(threading.Thread):
             transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
         ])
 
-        CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(model_num), transform)
+        CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(self.model_num), transform)
         trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=30, shuffle=True, num_workers=2)
 
-        Gan = CIFAR10_Net(model_num)
+        Gan = CIFAR10_Net(self.model_num, self.start_num, self.end_num)
+
+        return 
 
         G_loss = []
         D_loss = []

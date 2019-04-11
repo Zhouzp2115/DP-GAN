@@ -93,9 +93,9 @@ class Discriminator(nn.Module):
 
 
 class CIFAR10_Net():
-    def __init__(self, model_num):
+    def __init__(self, model_num, start_num, end_num):
 
-        if model_num < 2:
+        if model_num < (start_num + end_num) / 2:
             self.device = torch.device("cuda:0")
             print('cuda:0 ', model_num)
         else:
