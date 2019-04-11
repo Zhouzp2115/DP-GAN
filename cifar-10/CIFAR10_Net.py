@@ -129,6 +129,8 @@ class CIFAR10_Net():
         self.fixed_noise = torch.randn(64, nz, 1, 1, device=self.device)
         self.img_list = []
 
+        self.model_num = model_num
+
     # [[],.....[]]
     def setgrad(self, grads, model):
         grad_sum = grads[0]
@@ -252,7 +254,3 @@ class CIFAR10_Net():
         plt.title("Fake Images")
         plt.imshow(np.transpose(self.img_list[-1], (1, 2, 0)))
         plt.savefig(file)
-
-    def save(self, fileG, fileD):
-        torch.save(self.netD, fileD)
-        torch.save(self.netG, fileG)

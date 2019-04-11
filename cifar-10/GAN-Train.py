@@ -73,7 +73,7 @@ class TrainThread(threading.Thread):
         Gan.D_losses = D_loss
         Gan.plotloss('loss_' + str(self.model_num) + '.png')
         Gan.plotfake('fakeimg_' + str(self.model_num) + '.png')
-        Gan.save('netG_' + str(self.model_num) + '.pt', 'netD_' + str(self.model_num) + '.pt')
+        torch.save(Gan ,'Gan_'+str(self.model_num)+'.pt')
 
 
 if __name__ == '__main__':
