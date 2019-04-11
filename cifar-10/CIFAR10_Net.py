@@ -112,7 +112,7 @@ class CIFAR10_Net():
         print(self.netD)
 
         self.D_lr = 0.0002
-        self.G_lr = 0.001
+        self.G_lr = 0.0002
 
         self.criterion = nn.BCELoss()
         self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)
@@ -120,6 +120,9 @@ class CIFAR10_Net():
 
         self.G_losses = []
         self.D_losses = []
+
+        self.fixed_noise = torch.randn(64, nz, 1, 1, device=self.device)
+        self.img_list = []
     
     #[[],.....[]]
     def setgrad(self ,grads ,model):
@@ -230,6 +233,17 @@ class CIFAR10_Net():
         plt.xlabel("iterations")
         plt.ylabel("Loss")
         plt.legend()
+        plt.savefig(file)
+
+    def plotfake(self ,file):
+        with torch.no_grad():
+            fake = self.netG(self.fixed_noise).detach().cpu()
+            self.img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
+        
+        plt.subplot(1,2,2)
+        plt.axis("off")
+        plt.title("Fake Images")
+        plt.imshow(np.transpose(self.img_list[-1],(1,2,0)))
         plt.savefig(file)
 
     def save(self, fileG, fileD):

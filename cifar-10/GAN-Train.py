@@ -38,6 +38,8 @@ def train():
 
     Gan = CIFAR10_Net(2)
     
+    G_loss = []
+    D_loss = []
     epoch_num = 5
     for epoch in range(epoch_num):
       for index, data in enumerate(trainloader):
@@ -46,12 +48,18 @@ def train():
         Gan.train(data[0])
         
         if (index+1) % 50 == 0:
+            G_loss.append(sum(Gan.G_losses)/50)
+            D_loss.append(sum(Gan.D_losses)/50)
+            Gan.G_losses.clear()
+            Gan.D_losses.clear()
             print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
-            print('Loss_D: %.4f\tLoss_G: %.4f'% 
-                (sum(Gan.D_losses[len(Gan.D_losses)-50:])/50, sum(Gan.G_losses[len(Gan.G_losses)-50:])/50))
+            print('Loss_D: %.4f\tLoss_G: %.4f'% (D_loss[-1] ,G_loss[-1]))
 
     print('train over')
+    Gan.G_losses = G_loss
+    Gan.D_losses = D_loss
     Gan.plotloss('loss.png')
+    Gan.plotloss('fakeimg.png')
     Gan.save('netG.pt', 'netD.pt')
 
 
