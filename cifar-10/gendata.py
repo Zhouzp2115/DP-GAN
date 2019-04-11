@@ -22,12 +22,14 @@ if __name__ == "__main__":
         nets.append(torch.load('Gan_' + str(i) + '.pt'))
 
     fake = {'data': [], 'labels': []}
-    for i in range(5000):
-        for j in range(10):
+
+    for j in range(10):
+        print('gen fake data label ',j)
+        for i in range(5000):
             noise = torch.randn(1, 100, 1, 1, device=nets[j].device)
             x = nets[j].netG(noise)
             label = j
             fake['data'].append(x.cpu())
             fake['labels'].append(label)
 
-    saveData('../data/cifar-10/sorted/', '0-9_fake' ,fake)
+saveData('../data/cifar-10/sorted/', '0-9_fake', fake)
