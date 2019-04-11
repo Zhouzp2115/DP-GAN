@@ -95,15 +95,20 @@ class Discriminator(nn.Module):
 
 
 class CIFAR10_Net():
-    def __init__(self, ngpu):
-        self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
+    def __init__(self, model_num):
+
+        if model_num < 5:
+            self.device = torch.device("cuda:0")
+        else:
+            self.device = torch.device("cuda:1")
+        # self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
         self.netG = Generator(ngpu).to(self.device)
         self.netD = Discriminator(ngpu).to(self.device)
 
-        if (self.device.type == 'cuda') and (ngpu > 1):
-            print('DataParallel')
-            self.netG = nn.DataParallel(self.netG, list(range(ngpu)))
-            self.netD = nn.DataParallel(self.netD, list(range(ngpu)))
+        #if (self.device.type == 'cuda') and (ngpu > 1):
+        #    print('DataParallel')
+        #    self.netG = nn.DataParallel(self.netG, list(range(ngpu)))
+        #    self.netD = nn.DataParallel(self.netD, list(range(ngpu)))
 
         self.netG.apply(weights_init)
         self.netD.apply(weights_init)

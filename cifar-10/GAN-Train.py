@@ -63,7 +63,7 @@ class TrainThread(threading.Thread):
                     D_loss.append(sum(Gan.D_losses) / 20)
                     Gan.G_losses.clear()
                     Gan.D_losses.clear()
-                    print('[%d/%d] batch_%d' % (epoch, epoch_num, index))
+                    print('model_%d [%d/%d] batch_%d' % (self.model_num, epoch, epoch_num, index))
                     print('Loss_D: %.4f\tLoss_G: %.4f' % (D_loss[-1], G_loss[-1]))
 
         print('train over')
@@ -81,6 +81,5 @@ if __name__ == '__main__':
         thread.start()
         threads.append(thread)
 
-    while True:
-        print('sleep')
-        time.sleep(1)
+    for i in range(10):
+        threads[i].join()
