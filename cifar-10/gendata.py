@@ -28,6 +28,6 @@ if __name__ == "__main__":
             x = nets[j].netG(noise)
             label = j
             fake['data'].append(x.cpu())
-            fake['label'].append(label)
+            fake['labels'].append(label)
 
     saveData('../data/cifar-10/sorted/', '0-9_fake')
