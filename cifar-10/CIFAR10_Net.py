@@ -148,9 +148,6 @@ class CIFAR10_Net():
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
-            
-            #print the data
-            print(real_cpu)
 
             self.netD.zero_grad()
             output = self.netD(real_cpu).view(-1)
@@ -160,10 +157,6 @@ class CIFAR10_Net():
             noise = torch.randn(b_size, nz, 1, 1, device=self.device)
             fake = self.netG(noise)
             
-            #print the fake img 
-            print(fake)
-            exit()
-
             label.fill_(fake_label)
             output = self.netD(fake.detach()).view(-1)
             errD_fake = self.criterion(output, label)

@@ -130,9 +130,6 @@ def train():
     plt.savefig('dcgan/TrainImg.png')
     #plt.show()
     
-    #print data from dataloader
-    print('data from dataloader before train\n',real_batch[0].to(device)[:64])
-
     netG = Generator(ngpu).to(device)
     netD = Discriminator(ngpu).to(device)
 
@@ -186,27 +183,19 @@ def train():
            real_cpu = data[0].to(device)
            b_size = real_cpu.size(0)
            label = torch.full((b_size,), real_label, device=device)
-           
-           #print data from  in train
-           print('train data\n',real_cpu)
-           
+              
            # Forward pass real batch through D
            output = netD(real_cpu).view(-1)
            errD_real = criterion(output, label)
    
            errD_real.backward()
            
-
            ## Train with all-fake batch
            # Generate batch of latent vectors
            noise = torch.randn(b_size, nz, 1, 1, device=device)
         
            # Generate fake image batch with G
            fake = netG(noise)
-
-           #print fake  in train
-           print('fake img\n',fake)
-
            label.fill_(fake_label)
            # Classify all fake batch with D
            output = netD(fake.detach()).view(-1)
@@ -240,8 +229,6 @@ def train():
                print('[%d/%d][%d/%d]\tLoss_D: %.4f\tLoss_G: %.4f'
                   % (epoch, num_epochs, i, batch_size,
                      sum(D_losses_batch).item()/i, sum(G_losses_batch).item()/i))
-            
-           break
 
         # Save Losses for plotting later
         G_losses.append(sum(G_losses_batch).item())
@@ -254,11 +241,8 @@ def train():
             with torch.no_grad():
                 fake = netG(fixed_noise).detach().cpu()
             img_list.append(vutils.make_grid(fake, padding=2, normalize=True))
-            #print img list 
-            print('fake img list\n',img_list)
-
         iters += 1
-        break
+     
     
     plt.figure(figsize=(10,5))
     plt.title("Generator and Discriminator Loss During Training")
@@ -279,8 +263,6 @@ def train():
     plt.title("Real Images")
     plt.imshow(np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0)))
     plt.savefig("dcgan/realimg.png")
-    #print plot real img
-    print('np.transpose' ,np.transpose(vutils.make_grid(real_batch[0].to(device)[:64], padding=5, normalize=True).cpu(),(1,2,0)))
 
     # Plot the fake images from the last epoch
     plt.subplot(1,2,2)
