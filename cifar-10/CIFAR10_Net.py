@@ -25,7 +25,8 @@ nz = 100
 ngf = 32
 ndf = 32
 num_epochs = 50
-lr = 0.0002
+#lr = 0.0002
+lr = 0.001
 beta1 = 0.5
 ngpu = 2
 
