@@ -76,10 +76,10 @@ class TrainThread(threading.Thread):
 
 if __name__ == '__main__':
     threads = []
-    for i in range(3):
+    for i in range(4):
         thread = TrainThread(i)
         thread.start()
         threads.append(thread)
 
-    for i in range(3):
+    for i in range(4):
         threads[i].join()

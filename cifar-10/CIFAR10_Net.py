@@ -95,12 +95,12 @@ class Discriminator(nn.Module):
 class CIFAR10_Net():
     def __init__(self, model_num):
 
-        if model_num < 5:
+        if model_num < 2:
             self.device = torch.device("cuda:0")
             print('cuda:0 ', model_num)
         else:
             self.device = torch.device("cuda:1")
-            print('cuda:1', model_num)
+            print('cuda:1 ', model_num)
         # self.device = torch.device("cuda:0" if (torch.cuda.is_available() and ngpu > 0) else "cpu")
         self.netG = Generator().to(self.device)
         self.netD = Discriminator().to(self.device)
