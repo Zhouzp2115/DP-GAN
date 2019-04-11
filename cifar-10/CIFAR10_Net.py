@@ -185,6 +185,8 @@ class CIFAR10_Net():
             self.G_grad.append(G_grad_batch)
             self.optimizerG.step()
 
+            exit()
+
             if i % 50 == 0:
                 print('Loss_D: %.4f\tLoss_G: %.4f'
                       % (sum(D_losses_batch).item() / i, sum(G_losses_batch).item() / i))
