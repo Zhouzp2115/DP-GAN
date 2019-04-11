@@ -31,7 +31,7 @@ class TrainThread(threading.Thread):
         self.model_num = model_num
 
     def run(self):
-        self.train(model_num)
+        self.train(self.model_num)
 
     def train(model_num):
         manualSeed = 999
