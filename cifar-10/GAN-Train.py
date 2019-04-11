@@ -71,6 +71,8 @@ class TrainThread(threading.Thread):
                     print('model_%d [%d/%d] batch_%d' % (self.model_num, epoch, epoch_num, index))
                     print('Loss_D: %.4f\tLoss_G: %.4f' % (D_loss[-1], G_loss[-1]))
 
+                return 
+
         print('train over')
         Gan.G_losses = G_loss
         Gan.D_losses = D_loss
