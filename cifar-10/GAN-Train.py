@@ -66,4 +66,4 @@ def train(model_num):
 
 if __name__ == '__main__':
     for i in range(10):
-          _thread.start_new_thread(train ,(i))
+          _thread.start_new_thread(train ,(i,))
