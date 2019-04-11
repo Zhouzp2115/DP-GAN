@@ -17,12 +17,13 @@ import matplotlib.pyplot as plt
 import matplotlib.animation as animation
 from IPython.display import HTML
 import pickle
+import thread
 
 from CIFAR10_Net import CIFAR10_Net
 from dataloader import CIFARDataLoader
 
 
-def train():
+def train(model_num):
     manualSeed = 999
     print("random seed:", manualSeed)
     random.seed(manualSeed)
@@ -33,14 +34,14 @@ def train():
         transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
     ])
 
-    CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_0', transform)
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=10, shuffle=True, num_workers=2)
+    CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_'+str(model_num), transform)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=30, shuffle=True, num_workers=2)
 
     Gan = CIFAR10_Net(2)
     
     G_loss = []
     D_loss = []
-    epoch_num = 10
+    epoch_num = 30
     for epoch in range(epoch_num):
       for index, data in enumerate(trainloader):
         #print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
@@ -58,10 +59,11 @@ def train():
     print('train over')
     Gan.G_losses = G_loss
     Gan.D_losses = D_loss
-    Gan.plotloss('loss.png')
-    Gan.plotfake('fakeimg.png')
-    Gan.save('netG.pt', 'netD.pt')
+    Gan.plotloss('loss_'+str(model_num)+'.png')
+    Gan.plotfake('fakeimg_'+str(model_num)+'.png')
+    Gan.save('netG_'+str(model_num)+'.pt', 'netD_'+str(model_num)+'.pt')
 
 
 if __name__ == '__main__':
-    train()
+    for i in range(10):
+          thread.start_new_thread(train ,(i))
