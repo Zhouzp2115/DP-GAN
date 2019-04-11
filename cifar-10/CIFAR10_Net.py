@@ -117,47 +117,30 @@ class CIFAR10_Net():
 
         self.G_losses = []
         self.D_losses = []
-
-    def setgrad(self):
-        G_grad_sum = self.G_grad[0]
-        D_grad_sum = self.D_grad[0]
+    
+    #[[],.....[]]
+    def setgrad(self ,grads):
+        grad_sum = grads[0]
         
-        for i in range(1, len(self.G_grad)):
-            for j in range(len(G_grad_sum[0])):
-                G_grad_sum[j] += self.G_grad[i][j]
-                D_grad_sum[j] += self.D_grad[i][j]
+        print(len(grads))
+        print(len(grad_sum))
         
-        for i in range(len(G_grad_sum)):
-            G_grad_sum[i] = G_grad_sum[i] / len(self.G_grad)
-
-        for i in range(len(D_grad_sum)):
-            D_grad_sum[i] = D_grad_sum[i] / len(self.D_grad)
-
-        self.G_grad.clear()
-        self.D_grad.clear()
+        for i in range(1, len(grads)):
+            for j in range(len(grad_sum)):
+               grad_sum[j] = grad_sum[j] + grads[i][j]
         
-        index = 0
-        for parameter in self.G_grad.parameters():
-            print(parameter.grad.requires_grad)
-            #parameter.grad = G_grad_sum[index]
-            parameter.grad.zero_()
-        index = 0
-        for parameter in self.D_grad.parameters():
-            print(parameter.grad.requires_grad)
-            #parameter.grad = D_grad_sum[index]
-            parameter.grad.zero_()
-
+        exit()
+       
     def train(self, batch_data):
         real_label = 1
         fake_label = 0
-        self.G_grad = []
-        self.D_grad = []
+        G_grad = []
+        D_grad = []
         G_losses_batch = []
         D_losses_batch = []
+        fake = []
 
-        i = 1
         for index, data in enumerate(batch_data):
-            G_grad_item = []
             D_grad_item = []
             data = data.reshape(1, 3, 32, 32)
             real_cpu = data.to(self.device)
@@ -170,10 +153,10 @@ class CIFAR10_Net():
             errD_real.backward()
 
             noise = torch.randn(b_size, nz, 1, 1, device=self.device)
-            fake = self.netG(noise)
+            fake.append(self.netG(noise))
             
             label.fill_(fake_label)
-            output = self.netD(fake.detach()).view(-1)
+            output = self.netD(fake[index].detach()).view(-1)
             errD_fake = self.criterion(output, label)
             errD_fake.backward()
             errD = errD_real + errD_fake
@@ -181,30 +164,38 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
-                #parameters.grad.zero_()
-            self.D_grad.append(D_grad_item)
+            D_grad.append(D_grad_item)
             self.optimizerD.step()
+        
+        self.setgrad(D_grad)
 
+        for index, data in enumerate(batch_data):
+            G_grad_item = []
+            data = data.reshape(1, 3, 32, 32)
+            real_cpu = data.to(self.device)
+            b_size = real_cpu.size(0)
+            label = torch.full((b_size,), real_label, device=self.device)
+            
             self.netG.zero_grad()
             label.fill_(real_label)
-            output = self.netD(fake).view(-1)
+            output = self.netD(fake[index]).view(-1)
             errG = self.criterion(output, label)
             errG.backward()
             G_losses_batch.append(errG)
 
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
-                #parameters.grad.zero_()
-            self.G_grad.append(G_grad_item)
+            G_grad.append(G_grad_item)
             self.optimizerG.step()
 
-            if i % 50 == 0:
+            if (index+1) % 50 == 0:
                 print('Loss_D: %.4f\tLoss_G: %.4f'
-                      % (sum(D_losses_batch).item() / i, sum(G_losses_batch).item() / i))
-            i += 1
+                      % (sum(D_losses_batch).item() / (index+1), sum(G_losses_batch).item() / (index+1)))
+        
+        self.setgrad(G_grad)
 
-        self.G_losses.append(sum(G_losses_batch).item() / (i - 1))
-        self.D_losses.append(sum(D_losses_batch).item() / (i - 1))
+        self.G_losses.append(sum(G_losses_batch).item() / len(G_losses_batch))
+        self.D_losses.append(sum(D_losses_batch).item() / len(D_losses_batch))
 
     def plotloss(self, file):
         plt.figure(figsize=(10, 5))
