@@ -203,7 +203,6 @@ class CIFAR10_Net():
                       % (sum(D_losses_batch).item() / i, sum(G_losses_batch).item() / i))
             i += 1
 
-        self.setgrad()
         self.G_losses.append(sum(G_losses_batch).item() / (i - 1))
         self.D_losses.append(sum(D_losses_batch).item() / (i - 1))
 
