@@ -111,9 +111,12 @@ class CIFAR10_Net():
         print(self.netG)
         print(self.netD)
 
+        self.D_lr = 0.0002
+        self.G_lr = 0.001
+
         self.criterion = nn.BCELoss()
-        self.optimizerD = optim.Adam(self.netD.parameters(), lr=lr, betas=(beta1, 0.999))
-        self.optimizerG = optim.Adam(self.netG.parameters(), lr=lr, betas=(beta1, 0.999))
+        self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)
+        self.optimizerG = optim.Adam(self.netG.parameters(), lr=self.G_lr)
 
         self.G_losses = []
         self.D_losses = []
@@ -136,15 +139,19 @@ class CIFAR10_Net():
 
     
     def adjust_learning_rate(self ,epoch):
-        global lr
-        print('lr ',lr)
+        print('G_lr ',self.G_lr)
+        print('D_lr ',self.D_lr)
         if epoch == 30:
-           lr = lr * 0.9 
+           self.G_lr = self.G_lr * 0.9 
+           self.D_lr = self.D_lr * 0.9
+        else:
+           return 
+
         for param_group in self.optimizerD.param_groups:
-            param_group['lr'] = lr
+            param_group['lr'] = self.D_lr
 
         for param_group in self.optimizerG.param_groups:
-            param_group['lr'] = lr
+            param_group['lr'] = self.G_lr
         
        
     def train(self, batch_data):
