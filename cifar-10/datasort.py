@@ -51,3 +51,4 @@ def testSetSort(root):
 
 if __name__ == '__main__':
     trainSetSort('../data/cifar-10/cifar-10-batches-py/')
+    testSetSort('../data/cifar-10/cifar-10-batches-py/')
