@@ -46,7 +46,8 @@ def train():
         Gan.train(data[0])
         
         if (index+1) % 50 == 0:
-            print('Loss_D: %.4f\tLoss_G: %.4f'% (Gan.D_losses[-1], Gan.G_losses[-1]))
+            print('Loss_D: %.4f\tLoss_G: %.4f'% 
+                (sum(Gan.D_losses[len(Gan.D_losses)-50:])/50, sum(Gan.G_losses[len(Gan.G_losses)-50:])/50))
 
     print('train over')
     Gan.plotloss('loss.png')
