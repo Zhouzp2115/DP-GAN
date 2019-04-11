@@ -59,7 +59,7 @@ def train():
     Gan.G_losses = G_loss
     Gan.D_losses = D_loss
     Gan.plotloss('loss.png')
-    Gan.plotloss('fakeimg.png')
+    Gan.plotfake('fakeimg.png')
     Gan.save('netG.pt', 'netD.pt')
 
 
