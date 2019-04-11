@@ -66,5 +66,5 @@ def train(model_num, start_num, end_num):
 
 
 if __name__ == '__main__':
-    for i in range(4):
-        train(i, 0, 3)
+    for i in range(10):
+        train(i, 0, 9)
