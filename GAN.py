@@ -207,6 +207,10 @@ def train():
            errD = errD_real + errD_fake
            D_losses_batch.append(errD)
            # Update D
+           count = 1
+           for parameters in netD.parameters():
+               print(count)
+               count += 1
            optimizerD.step()
 
            ############################
@@ -222,7 +226,14 @@ def train():
            errG.backward()
            G_losses_batch.append(errG)
            # Update G
+           count = 1
+           for parameters in netG.parameters():
+               print(count)
+               count += 1
            optimizerG.step()
+
+           exit()
+
 
            # Output training stats
            if i % 50 == 0:
