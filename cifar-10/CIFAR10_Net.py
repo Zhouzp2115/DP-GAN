@@ -246,6 +246,7 @@ class CIFAR10_Net():
         #test
         self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
+            print ("grad from setgrad netD")
             print (parameters.grad)
             break
         #self.optimizerD.step()
@@ -268,6 +269,7 @@ class CIFAR10_Net():
         errD_fake.backward()
 
         for parameter in self.netD.parameters():
+            print("grad from batch netD")
             print (parameter.grad)
             break
 
@@ -281,6 +283,7 @@ class CIFAR10_Net():
         errG.backward()
 
         for parameter in self.netG.parameters():
+            print("grad from batch netG")
             print (parameter.grad)
             break
 
@@ -309,6 +312,7 @@ class CIFAR10_Net():
 
         self.setgrad(G_grad, self.netG)
         for parameter in self.netG.parameters():
+            print("grad from setgrad netG")
             print (parameters.grad)
             break
         #self.optimizerG.step()
