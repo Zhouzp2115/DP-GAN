@@ -243,8 +243,48 @@ class CIFAR10_Net():
             D_grad.append(D_grad_item)
             # self.optimizerD.step()
 
+        #test
         self.setgrad(D_grad, self.netD)
-        self.optimizerD.step()
+        for parameter in self.netD.parameters():
+            print (parameters.grad)
+            break
+        #self.optimizerD.step()
+
+        noise_tensor = torch.full((50,3,32,32),0.0).to(self.device)
+        for i in range(50):
+            noise_tensor[i] = noise[i]
+        batch_data = batch_data.to(self.device)
+        self.netD.zero_grad()
+        self.netG.zero_grad()
+        fake = self.netG(noise_tensor)
+        label = torch.full((50,), real_label, device=self.device)
+        output = self.netD(batch_data).view(-1)
+        errD_real = self.criterion(output, label)
+        errD_real.backward()
+
+        label.fill_(fake_label)
+        output = self.netD(fake.detach()).view(-1)
+        errD_fake = self.criterion(output, label)
+        errD_fake.backward()
+
+        for parameter in self.netD.parameters():
+            print (parameter.grad)
+            break
+
+        #netG
+        self.netD.zero_grad()
+        self.netG.zero_grad()
+        label.fill_(real_label)
+        fake = self.netG(noise_tensor)
+        output = self.netD(fake).view(-1)
+        errG = self.criterion(output, label)
+        errG.backward()
+
+        for parameter in self.netG.parameters():
+            print (parameter.grad)
+            break
+
+
 
         for index, data in enumerate(batch_data):
             G_grad_item = []
@@ -268,7 +308,12 @@ class CIFAR10_Net():
             G_grad.append(G_grad_item)
 
         self.setgrad(G_grad, self.netG)
-        self.optimizerG.step()
+        for parameter in self.netG.parameters():
+            print (parameters.grad)
+            break
+        #self.optimizerG.step()
+
+        exit()
 
         self.G_losses.append(sum(G_losses_batch).item() / len(G_losses_batch))
         self.D_losses.append(sum(D_losses_batch).item() / len(D_losses_batch))
