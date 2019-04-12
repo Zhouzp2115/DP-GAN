@@ -267,8 +267,8 @@ class CIFAR10_Net():
             print("grad from setgrad netD")
             parameter.grad = torch.full((32,3,4,4),1.0).to(self.device)
             print(parameter.grad.size())
-            print(parameters.grad)
-            break
+            print(type(parameters.grad))
+            exit()
         # self.optimizerD.step()
 
         noise_tensor = torch.full((batch_size, 100, 1, 1), 0.0).to(self.device)
