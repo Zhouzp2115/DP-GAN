@@ -242,6 +242,8 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
+            print ('D_grad_item[0]')
+            print (D_grad_item[0])
             D_grad.append(D_grad_item)
             # self.optimizerD.step()
 
@@ -277,6 +279,8 @@ class CIFAR10_Net():
             print(parameter.grad.size())
             print(parameter.grad)
             break
+
+        exit()
 
         # netG
         self.netD.zero_grad()
