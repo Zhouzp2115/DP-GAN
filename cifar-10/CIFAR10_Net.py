@@ -161,7 +161,7 @@ class CIFAR10_Net():
         print(self.netD)
 
         self.D_lr = 0.0002
-        self.G_lr = 0.0001
+        self.G_lr = 0.001
 
         self.criterion = nn.BCELoss()
         self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)
@@ -214,38 +214,6 @@ class CIFAR10_Net():
         G_losses_batch = []
         D_losses_batch = []
         noise = []
-
-        # test grad
-        '''
-        batch_data = torch.full((50, 3, 64, 64) ,0.5).to(self.device)
-        print(batch_data.size())
-        item = batch_data[0]
-        print(item.size())
-        label = torch.full((50,), real_label, device=self.device)
-
-        self.netD.zero_grad()
-        output = self.netD(batch_data).view(-1)
-        errD_real = self.criterion(output, label)
-        errD_real.backward()
-
-        for parameter in self.netD.parameters():
-            print(parameter.grad)
-            print(parameter.grad.size())
-            break
-
-        self.netD.zero_grad()
-        item = item.reshape(1, 3, 64, 64)
-        label = torch.full((1,), real_label, device=self.device)
-        output = self.netD(item).view(-1)
-        errD_real = self.criterion(output, label)
-        errD_real.backward()
-
-        for parameter in self.netD.parameters():
-            print(parameter.grad)
-            print(parameter.grad.size())
-            break
-        exit()
-        '''
 
         for index, data in enumerate(batch_data):
             D_grad_item = []
