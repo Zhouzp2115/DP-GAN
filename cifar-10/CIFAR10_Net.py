@@ -243,15 +243,16 @@ class CIFAR10_Net():
             D_grad.append(D_grad_item)
             # self.optimizerD.step()
 
-        #test
+        # test
         self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
-            print ("grad from setgrad netD")
-            print (parameters.grad)
+            print("grad from setgrad netD")
+            print(parameter.grad.size())
+            print(parameters.grad)
             break
-        #self.optimizerD.step()
+        # self.optimizerD.step()
 
-        noise_tensor = torch.full((50,100,1,1),0.0).to(self.device)
+        noise_tensor = torch.full((50, 100, 1, 1), 0.0).to(self.device)
         for i in range(50):
             noise_tensor[i] = noise[i]
         batch_data = batch_data.to(self.device)
@@ -270,10 +271,11 @@ class CIFAR10_Net():
 
         for parameter in self.netD.parameters():
             print("grad from batch netD")
-            print (parameter.grad)
+            print(parameter.grad.size())
+            print(parameter.grad)
             break
 
-        #netG
+        # netG
         self.netD.zero_grad()
         self.netG.zero_grad()
         label.fill_(real_label)
@@ -284,10 +286,8 @@ class CIFAR10_Net():
 
         for parameter in self.netG.parameters():
             print("grad from batch netG")
-            print (parameter.grad)
+            print(parameter.grad)
             break
-
-
 
         for index, data in enumerate(batch_data):
             G_grad_item = []
@@ -313,9 +313,10 @@ class CIFAR10_Net():
         self.setgrad(G_grad, self.netG)
         for parameter in self.netG.parameters():
             print("grad from setgrad netG")
-            print (parameters.grad)
+            print(parameter.grad.size())
+            print(parameters.grad)
             break
-        #self.optimizerG.step()
+        # self.optimizerG.step()
 
         exit()
 
