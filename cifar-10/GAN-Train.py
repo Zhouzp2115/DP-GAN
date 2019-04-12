@@ -44,7 +44,7 @@ def train(model_num, start_num, end_num):
 
     G_loss = []
     D_loss = []
-    epoch_num = 1
+    epoch_num = 2
     for epoch in range(epoch_num):
         for index, data in enumerate(trainloader):
             # print('[%d/%d] batch_%d'%(epoch ,epoch_num ,index))
