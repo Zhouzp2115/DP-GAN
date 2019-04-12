@@ -262,7 +262,7 @@ class CIFAR10_Net():
         # test
         batch_size = 1
         self.netD.zero_grad()
-        self.setgrad(D_grad, self.netD)
+        #self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
             print(parameter.grad.size())
