@@ -265,7 +265,7 @@ class CIFAR10_Net():
         #self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
-            parameter.grad = torch.full((32,3,4,4),1.0).to(self.device)
+            parameter.grad.data = torch.full((32,3,4,4),1.0).to(self.device)
             print(parameter.grad.size())
             print(type(parameters.grad.data))
             exit()
