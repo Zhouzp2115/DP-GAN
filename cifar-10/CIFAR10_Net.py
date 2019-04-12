@@ -261,13 +261,13 @@ class CIFAR10_Net():
 
         # test
         batch_size = 1
-        self.netD.zero_grad()
         #self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
-            parameter.grad.data = torch.full((32,3,4,4),1.0).to(self.device)
+            parameter.zero_grad()
+            parameter.grad = torch.full((32,3,4,4),1.0).to(self.device)
             print(parameter.grad.size())
-            print(parameters.grad.data)
+            print(parameters.grad)
             exit()
         # self.optimizerD.step()
 
