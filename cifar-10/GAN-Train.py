@@ -38,7 +38,7 @@ def train(model_num, start_num, end_num):
     ])
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(model_num), transform)
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=50, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=1, shuffle=True, num_workers=2)
 
     Gan = CIFAR10_Net(model_num, start_num, end_num)
 

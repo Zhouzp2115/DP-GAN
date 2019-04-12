@@ -246,6 +246,7 @@ class CIFAR10_Net():
             # self.optimizerD.step()
 
         # test
+        batch_size = 1
         self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
@@ -254,14 +255,14 @@ class CIFAR10_Net():
             break
         # self.optimizerD.step()
 
-        noise_tensor = torch.full((50, 100, 1, 1), 0.0).to(self.device)
-        for i in range(50):
+        noise_tensor = torch.full((batch_size, 100, 1, 1), 0.0).to(self.device)
+        for i in range(batch_size):
             noise_tensor[i] = noise[i]
         batch_data = batch_data.to(self.device)
         self.netD.zero_grad()
         self.netG.zero_grad()
         fake = self.netG(noise_tensor)
-        label = torch.full((50,), real_label, device=self.device)
+        label = torch.full((batch_size,), real_label, device=self.device)
         output = self.netD(batch_data).view(-1)
         errD_real = self.criterion(output, label)
         errD_real.backward()
