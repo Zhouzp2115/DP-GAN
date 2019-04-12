@@ -267,7 +267,7 @@ class CIFAR10_Net():
             print("grad from setgrad netD")
             parameter.grad.data = torch.full((32,3,4,4),1.0).to(self.device)
             print(parameter.grad.size())
-            print(type(parameters.grad.data))
+            print(parameters.grad)
             exit()
         # self.optimizerD.step()
 
