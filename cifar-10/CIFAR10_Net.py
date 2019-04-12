@@ -217,7 +217,7 @@ class CIFAR10_Net():
 
         for index, data in enumerate(batch_data):
             D_grad_item = []
-            data = data.reshape(1, 3, 32, 32)
+            data = data.reshape(1, 3, 64, 64)
             real_cpu = data.to(self.device)
             b_size = real_cpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
