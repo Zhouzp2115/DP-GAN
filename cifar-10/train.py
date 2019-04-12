@@ -70,7 +70,7 @@ if __name__ == '__main__':
 
     print('Finished Training')
 
-    torch.save(net, 'cifar-net.pt')
+    torch.save(net, 'result/cifar-net.pt')
     print('save model ..... OK')
 
     #test acc
