@@ -216,12 +216,11 @@ class CIFAR10_Net():
         noise = []
 
         # test grad
-        batch_data = batch_data.to(self.device)
+        batch_data = torch.full((50, 3, 64, 64) ,0.5).to(self.device)
         print(batch_data.size())
         item = batch_data[0]
         print(item.size())
         label = torch.full((50,), real_label, device=self.device)
-        label_item = label[0]
 
         self.netD.zero_grad()
         output = self.netD(batch_data).view(-1)
