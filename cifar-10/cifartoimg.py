@@ -1,6 +1,6 @@
 import os
 import numpy as np
-from scipy.misc import imsave
+import imageio
 
 
 def unpickle(file):
@@ -10,38 +10,29 @@ def unpickle(file):
     return dict
 
 
-def convert(src, dstDir):
+def convert(src, dstDir, num=1000):
     if not os.path.exists(dstDir):
         os.makedirs(dstDir)
 
     imgData = unpickle(src)
 
-    for i in range(len(imgData['labels'])):
+    for i in range(num):
         img = imgData['data'][i]
         img = img.reshape(3, 32, 32)
         img = img.transpose(1, 2, 0)
 
-        img_name = dstDir + str(i) + '_label_' + str(imgData['labels'][i]) + '.jpg'
-        imsave(img_name, img)
+        img_name = dstDir + str(i) + '.jpg'
+        imageio.imwrite(img_name, img)
 
 
 if __name__ == '__main__':
-    root = '/home/zhouzp/MachineLearning/CIFAR10/cifar-10-batches-py/SortedData/TargetModel/'
+    root = '../data/cifar-10/sorted/'
 
-    src = root + 'trainset'
-    dst = root + 'ImgTrain/'
-    convert(src, dst)
-
-    src = root + 'testset'
-    dst = root + 'ImgTest/'
-    convert(src, dst)
-
-    root = '/home/zhouzp/MachineLearning/CIFAR10/cifar-10-batches-py/SortedData/ShadowModelData/'
-    for i in range(5):
-        src = root + 'shadow_'+str(i)+'_train'
-        dst = root + 'ImgTrain_'+str(i)+'/'
+    for i in range(10):
+        src = root + 'train_' + str(i)
+        dst = root + 'train_' + str(i) + '_img/'
         convert(src, dst)
 
-        src = root + 'shadow_' + str(i) + '_test'
-        dst = root + 'ImgTest_' + str(i) + '/'
-        convert(src, dst)
+    src = root + 'test'
+    dst = root + 'testimg/'
+    convert(src, dst)
