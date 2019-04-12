@@ -216,6 +216,7 @@ class CIFAR10_Net():
         noise = []
 
         # test grad
+        '''
         batch_data = torch.full((50, 3, 64, 64) ,0.5).to(self.device)
         print(batch_data.size())
         item = batch_data[0]
@@ -243,8 +244,8 @@ class CIFAR10_Net():
             print(parameter.grad)
             print(parameter.grad.size())
             break
-
         exit()
+        '''
 
         for index, data in enumerate(batch_data):
             D_grad_item = []
@@ -297,11 +298,6 @@ class CIFAR10_Net():
             for parameters in self.netG.parameters():
                 G_grad_item.append(parameters.grad.clone().detach())
             G_grad.append(G_grad_item)
-
-            # if (index+1) % 50 == 0:
-            #    print('Loss_D: %.4f\tLoss_G: %.4f'
-            #          % (sum(D_losses_batch).item() / (index+1), sum(G_losses_batch).item() / (index+1)))
-            # self.optimizerG.step()
 
         self.setgrad(G_grad, self.netG)
         self.optimizerG.step()
