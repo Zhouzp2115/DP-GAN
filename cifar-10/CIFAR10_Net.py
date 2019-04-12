@@ -116,7 +116,7 @@ class CIFAR10_Net():
         print(self.netD)
 
         self.D_lr = 0.0002
-        self.G_lr = 0.0002
+        self.G_lr = 0.00002
 
         self.criterion = nn.BCELoss()
         self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)

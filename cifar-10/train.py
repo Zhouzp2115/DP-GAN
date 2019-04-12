@@ -7,8 +7,8 @@ import torch.nn as nn
 import torch.nn.functional as F
 from torch import optim
 
+from fkimgloader import FakeDataLoader
 from dataloader import CIFARDataLoader
-
 
 class Net(nn.Module):
     def __init__(self):
@@ -41,12 +41,8 @@ class Net(nn.Module):
 
 
 if __name__ == '__main__':
-    transform = transforms.Compose([
-        transforms.ToTensor()
-    ])
-
-    CIFARDataset = CIFARDataLoader(
-        '../data/cifar-10/sorted/0-9_fake', transform)
+    CIFARDataset = FakeDataLoader(
+        '../data/cifar-10/sorted/0-9_fake')
     trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
 
     net = Net()
@@ -60,6 +56,7 @@ if __name__ == '__main__':
 
     for index, data in enumerate(trainloader, 0):
         inputs, labels = data
+        #print(inputs.size())
         if torch.cuda.is_available():
             inputs = inputs.cuda()
             labels = labels.cuda()
@@ -69,9 +66,47 @@ if __name__ == '__main__':
         loss.backward()
         optimizer.step()
 
-        print('batch_%d loss: ' % (index, loss.item()))
+        print('batch_%d loss: %.4f' % (index, loss.item()))
 
     print('Finished Training')
 
     torch.save(net, 'cifar-net.pt')
     print('save model ..... OK')
+
+    #test acc
+    print('test acc')
+
+    transform = transforms.Compose([
+        transforms.ToTensor(),
+        transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5))
+    ])
+
+    CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/test', transform)
+    testloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=50, shuffle=True, num_workers=2)
+    
+    total_acc = 0
+    total = 0
+    for i, data in enumerate(testloader, 0):
+        images, labels = data
+        index = labels
+
+        images = images.cuda()
+        labels = labels.cuda()
+
+        outputs = net(images)
+
+        #print(outputs.size())
+        #print(outputs[0])
+        #print(outputs[1])
+        _, index  = torch.max(outputs.data, 1)
+        #print(index)
+        #print(labels)
+        for i in range(len(index)):
+            if index[i] == labels[i]:
+                total_acc += 1
+        total += 50
+
+    print('acc :',total_acc*1.0/total)
+
+
+

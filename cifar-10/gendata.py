@@ -29,7 +29,7 @@ if __name__ == "__main__":
             noise = torch.randn(1, 100, 1, 1, device=nets[j].device)
             x = nets[j].netG(noise)
             label = j
-            fake['data'].append(x.cpu())
+            fake['data'].append(x.cpu().detach())
             fake['labels'].append(label)
 
 saveData('../data/cifar-10/sorted/', '0-9_fake', fake)
