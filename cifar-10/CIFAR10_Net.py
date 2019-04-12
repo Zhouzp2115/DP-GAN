@@ -164,6 +164,7 @@ class CIFAR10_Net():
         self.G_lr = 0.0002
 
         self.criterion = nn.BCELoss()
+        # self.criterion = nn.MSELoss()
         self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)
         self.optimizerG = optim.Adam(self.netG.parameters(), lr=self.G_lr)
 
@@ -179,14 +180,8 @@ class CIFAR10_Net():
     def setgrad(self, grads, model):
         grad_sum = grads[0]
 
-        print('in setgrad')
-        print('len(grads) ', len(grads))
-        print('grad_sum[0].size()', grad_sum[0].size())
-
         for i in range(1, len(grads)):
-            print('i ', i)
             for j in range(len(grad_sum)):
-                print('j ', j)
                 grad_sum[j] = grad_sum[j] + grads[i][j]
 
         '''
@@ -198,12 +193,6 @@ class CIFAR10_Net():
         for parameter in model.parameters():
             parameter.grad = grad_sum[index]
             index += 1
-
-            if index == 1:
-                print('grad_sum[0]')
-                print(grad_sum[0])
-                print('parameter grad')
-                print(parameter.grad)
 
     def adjust_learning_rate(self, epoch):
         print('G_lr ', self.G_lr)
@@ -229,24 +218,32 @@ class CIFAR10_Net():
         D_losses_batch = []
         noise = []
 
+        batch_data = torch.randn(2, 3, 64, 64).to(self.device)
+
         for index, data in enumerate(batch_data):
             D_grad_item = []
             data = data.reshape(1, 3, 64, 64)
-            real_cpu = data.to(self.device)
-            b_size = real_cpu.size(0)
+            real_gpu = data.to(self.device)
+            b_size = real_gpu.size(0)
             label = torch.full((b_size,), real_label, device=self.device)
 
             self.netD.zero_grad()
             self.netG.zero_grad()
-            output = self.netD(real_cpu).view(-1)
+
+            print('input1 in for netD\n', real_gpu)
+            output = self.netD(real_gpu).view(-1)
+            print('output1 in for ', output)
+            output = self.netD(real_gpu).view(-1)
+            print('output1 in for ', output)
+            # output = self.netD(torch.ones(1, 3, 64, 64, device=self.device)).view(-1)
             errD_real = self.criterion(output, label)
             errD_real.backward()
 
             noise.append(torch.randn(b_size, nz, 1, 1, device=self.device))
             fake = self.netG(noise[index])
-
             label.fill_(fake_label)
             output = self.netD(fake.detach()).view(-1)
+            # output = self.netD(torch.ones(1, 3, 64, 64, device=self.device)).view(-1)
             errD_fake = self.criterion(output, label)
             errD_fake.backward()
             errD = errD_real + errD_fake
@@ -254,44 +251,54 @@ class CIFAR10_Net():
 
             for parameter in self.netD.parameters():
                 D_grad_item.append(parameter.grad.clone().detach())
-            print('D_grad_item[0]')
-            print(D_grad_item[0])
             D_grad.append(D_grad_item)
-            # self.optimizerD.step()
 
         # test
-        batch_size = 1
+        print(' ')
+        batch_size = 2
         self.netD.zero_grad()
-        # self.setgrad(D_grad, self.netD)
+        self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
             print(parameter.grad.size())
-            parameter.grad = torch.full((32,3,4,4) ,2.00).to(self.device)
-            print(parameter.grad)
-            exit()
+            print(parameter.grad[0][0][0])
+            break
         # self.optimizerD.step()
 
+        print(' ')
         noise_tensor = torch.full((batch_size, 100, 1, 1), 0.0).to(self.device)
         for i in range(batch_size):
             noise_tensor[i] = noise[i]
         batch_data = batch_data.to(self.device)
-        self.netD.zero_grad()
         self.netG.zero_grad()
         fake = self.netG(noise_tensor)
         label = torch.full((batch_size,), real_label, device=self.device)
+
+        print('input1 in batch\n', batch_data[0])
+        print('input1 in batch\n', batch_data[1])
+
+        output = self.netD(batch_data[0].reshape(1, 3, 64, 64)).view(-1)
+        print('output1 in batch\n', output)
+        output = self.netD(batch_data[1].reshape(1, 3, 64, 64)).view(-1)
+        print('output1 in batch\n', output)
         output = self.netD(batch_data).view(-1)
+        print('output1 in batch\n', output)
+        # output = self.netD(torch.ones(2, 3, 64, 64, device=self.device)).view(-1)
+
         errD_real = self.criterion(output, label)
         errD_real.backward()
 
         label.fill_(fake_label)
+
         output = self.netD(fake.detach()).view(-1)
+        # output = self.netD(torch.ones(2, 3, 64, 64, device=self.device)).view(-1)
         errD_fake = self.criterion(output, label)
         errD_fake.backward()
 
         for parameter in self.netD.parameters():
             print("grad from batch netD")
             print(parameter.grad.size())
-            print(parameter.grad)
+            print(parameter.grad[0][0][0])
             break
 
         exit()
@@ -308,7 +315,7 @@ class CIFAR10_Net():
         for parameter in self.netG.parameters():
             print("grad from batch netG")
             print(parameter.grad.size())
-            print(parameter.grad)
+            print(parameter.grad[0][0][0])
             break
 
         for index, data in enumerate(batch_data):
@@ -328,15 +335,16 @@ class CIFAR10_Net():
             errG.backward()
             G_losses_batch.append(errG)
 
-            for parameters in self.netG.parameters():
-                G_grad_item.append(parameters.grad.clone().detach())
+            for parameter in self.netG.parameters():
+                G_grad_item.append(parameter.grad.clone().detach())
             G_grad.append(G_grad_item)
 
+        self.netG.zero_grad()
         self.setgrad(G_grad, self.netG)
         for parameter in self.netG.parameters():
             print("grad from setgrad netG")
             print(parameter.grad.size())
-            print(parameters.grad)
+            print(parameter.grad[0][0][0])
             break
         # self.optimizerG.step()
 
