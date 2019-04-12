@@ -216,7 +216,7 @@ class CIFAR10_Net():
         noise = []
 
         # test grad
-        batch_data.to(self.device)
+        batch_data = batch_data.to(self.device)
         print(batch_data.size())
         item = batch_data[0]
         print(item.size())
