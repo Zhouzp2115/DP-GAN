@@ -203,7 +203,7 @@ class CIFAR10_Net():
                 print('grad_sum[0]')
                 print(grad_sum[0])
                 print('parameter grad')
-                print (parameter.grad)
+                print(parameter.grad)
 
     def adjust_learning_rate(self, epoch):
         print('G_lr ', self.G_lr)
@@ -252,8 +252,8 @@ class CIFAR10_Net():
             errD = errD_real + errD_fake
             D_losses_batch.append(errD)
 
-            for parameters in self.netD.parameters():
-                D_grad_item.append(parameters.grad.clone().detach())
+            for parameter in self.netD.parameters():
+                D_grad_item.append(parameter.grad.clone().detach())
             print('D_grad_item[0]')
             print(D_grad_item[0])
             D_grad.append(D_grad_item)
@@ -262,11 +262,12 @@ class CIFAR10_Net():
         # test
         batch_size = 1
         self.netD.zero_grad()
-        #self.setgrad(D_grad, self.netD)
+        # self.setgrad(D_grad, self.netD)
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
             print(parameter.grad.size())
-            print(parameter.weight.size())
+            parameter.grad = torch.full((32,3,4,4) ,2.00).to(self.device)
+            print(parameter.grad)
             exit()
         # self.optimizerD.step()
 
