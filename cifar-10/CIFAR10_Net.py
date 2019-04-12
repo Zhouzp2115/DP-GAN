@@ -149,10 +149,12 @@ class CIFAR10_Net():
         self.netG = Generator().to(self.device)
         self.netD = Discriminator().to(self.device)
 
-        # if (self.device.type == 'cuda') and (ngpu > 1):
-        #    print('DataParallel')
-        #    self.netG = nn.DataParallel(self.netG, list(range(ngpu)))
-        #    self.netD = nn.DataParallel(self.netD, list(range(ngpu)))
+        if (self.device.type == 'cuda') and (torch.cuda.device_count() > 1):
+            print('DataParallel')
+            self.netG = nn.DataParallel(self.netG, list(range(torch.cuda.device_count())))
+            self.netD = nn.DataParallel(self.netD, list(range(torch.cuda.device_count())))
+        else:
+            print('GPU num ', torch.cuda.device_count())
 
         self.netG.apply(weights_init)
         self.netD.apply(weights_init)
@@ -220,6 +222,41 @@ class CIFAR10_Net():
         G_losses_batch = []
         D_losses_batch = []
         noise = []
+
+        # test batch train
+        batch_data = batch_data.to(self.device)
+        batch_size = batch_data.size(0)
+        label = torch.full((batch_size,), real_label, device=self.device)
+
+        self.netD.zero_grad()
+        self.netG.zero_grad()
+
+        output = self.netD(batch_data).view(-1)
+        errD_real = self.criterion(output, label)
+        errD_real.backward()
+        noise = torch.randn(batch_size, nz, 1, 1, device=self.device)
+        fake = self.netG(noise)
+        label.fill_(fake_label)
+        output = self.netD(fake.detach()).view(-1)
+        errD_fake = self.criterion(output, label)
+        errD_fake.backward()
+        errD = errD_real + errD_fake
+        self.D_losses.append(errD)
+        self.optimizerD.step()
+
+        label = torch.full((batch_size,), real_label, device=self.device)
+        self.netG.zero_grad()
+        self.netD.zero_grad()
+
+        label.fill_(real_label)
+        fakeimg = self.netG(noise)
+        output = self.netD(fakeimg).view(-1)
+        errG = self.criterion(output, label)
+        errG.backward()
+        self.G_losses.append(errG)
+        self.optimizerG.step()
+
+        return
 
         for index, data in enumerate(batch_data):
             D_grad_item = []
