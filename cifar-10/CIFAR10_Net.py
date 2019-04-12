@@ -196,11 +196,14 @@ class CIFAR10_Net():
 
         index = 0
         for parameter in model.parameters():
-            if index == 0:
-                print('grad_sum[0]')
-                print(grad_sum[0])
             parameter.grad = grad_sum[index]
             index += 1
+
+            if index == 1:
+                print('grad_sum[0]')
+                print(grad_sum[0])
+                print('parameter grad')
+                print (parameter.grad)
 
     def adjust_learning_rate(self, epoch):
         print('G_lr ', self.G_lr)
