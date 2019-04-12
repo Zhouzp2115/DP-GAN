@@ -179,8 +179,14 @@ class CIFAR10_Net():
     def setgrad(self, grads, model):
         grad_sum = grads[0]
 
+        print('in setgrad')
+        print('grads.size() ', grads.size())
+        print('grad_sum.size()', grad_sum.size())
+
         for i in range(1, len(grads)):
+            print('i ', i)
             for j in range(len(grad_sum)):
+                print('j ', j)
                 grad_sum[j] = grad_sum[j] + grads[i][j]
 
         '''
@@ -242,8 +248,8 @@ class CIFAR10_Net():
 
             for parameters in self.netD.parameters():
                 D_grad_item.append(parameters.grad.clone().detach())
-            print ('D_grad_item[0]')
-            print (D_grad_item[0])
+            print('D_grad_item[0]')
+            print(D_grad_item[0])
             D_grad.append(D_grad_item)
             # self.optimizerD.step()
 
