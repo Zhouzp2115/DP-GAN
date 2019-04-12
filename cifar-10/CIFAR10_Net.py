@@ -196,6 +196,9 @@ class CIFAR10_Net():
 
         index = 0
         for parameter in model.parameters():
+            if index == 0:
+                print('grad_sum[0]')
+                print(grad_sum[0])
             parameter.grad = grad_sum[index]
             index += 1
 
