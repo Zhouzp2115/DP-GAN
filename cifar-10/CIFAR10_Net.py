@@ -250,7 +250,7 @@ class CIFAR10_Net():
             break
         #self.optimizerD.step()
 
-        noise_tensor = torch.full((50,3,32,32),0.0).to(self.device)
+        noise_tensor = torch.full((50,100,1,1),0.0).to(self.device)
         for i in range(50):
             noise_tensor[i] = noise[i]
         batch_data = batch_data.to(self.device)
