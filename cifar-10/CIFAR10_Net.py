@@ -181,7 +181,7 @@ class CIFAR10_Net():
 
         print('in setgrad')
         print('grads.size() ', grads.size())
-        print('grad_sum.size()', grad_sum.size())
+        print('grad_sum[0].size()', grad_sum[0].size())
 
         for i in range(1, len(grads)):
             print('i ', i)
