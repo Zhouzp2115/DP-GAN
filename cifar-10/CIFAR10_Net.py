@@ -252,60 +252,6 @@ class CIFAR10_Net():
         self.setgrad(D_grad, self.netD)
         self.optimizerD.step()
 
-        '''
-        print(' ')
-        noise_tensor = torch.full((batch_size, 100, 1, 1), 0.0).to(self.device)
-        for i in range(batch_size):
-            noise_tensor[i] = noise[i]
-        batch_data = batch_data.to(self.device)
-        self.netG.zero_grad()
-        fake = self.netG(noise_tensor)
-        label = torch.full((batch_size,), real_label, device=self.device)
-
-        print('input1 in batch\n', batch_data[0])
-        print('input1 in batch\n', batch_data[1])
-
-        output = self.netD(batch_data[0].reshape(1, 3, 64, 64)).view(-1)
-        print('output1 in batch\n', output)
-        output = self.netD(batch_data[1].reshape(1, 3, 64, 64)).view(-1)
-        print('output1 in batch\n', output)
-        output = self.netD(batch_data).view(-1)
-        print('output1 in batch\n', output)
-        # output = self.netD(torch.ones(2, 3, 64, 64, device=self.device)).view(-1)
-
-        errD_real = self.criterion(output, label)
-        errD_real.backward()
-
-        label.fill_(fake_label)
-
-        output = self.netD(fake.detach()).view(-1)
-        # output = self.netD(torch.ones(2, 3, 64, 64, device=self.device)).view(-1)
-        errD_fake = self.criterion(output, label)
-        errD_fake.backward()
-
-        for parameter in self.netD.parameters():
-            print("grad from batch netD")
-            print(parameter.grad.size())
-            print(parameter.grad[0][0][0])
-            break
-
-        exit()
-
-        # netG
-        self.netD.zero_grad()
-        self.netG.zero_grad()
-        label.fill_(real_label)
-        fake = self.netG(noise_tensor)
-        output = self.netD(fake).view(-1)
-        errG = self.criterion(output, label)
-        errG.backward()
-
-        for parameter in self.netG.parameters():
-            print("grad from batch netG")
-            print(parameter.grad.size())
-            print(parameter.grad[0][0][0])
-            break
-        '''
         for index, data in enumerate(batch_data):
             G_grad_item = []
             data = data.reshape(1, 3, 64, 64)
