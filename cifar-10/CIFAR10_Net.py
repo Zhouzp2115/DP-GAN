@@ -86,8 +86,8 @@ class Generator(nn.Module):
             # state size. (nc) x 64 x 64
         )
 
-        def forward(self, input):
-            return self.main(input)
+    def forward(self, input):
+        return self.main(input)
 
 
 '''
