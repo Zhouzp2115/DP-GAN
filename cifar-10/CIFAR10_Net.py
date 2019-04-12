@@ -266,7 +266,7 @@ class CIFAR10_Net():
         for parameter in self.netD.parameters():
             print("grad from setgrad netD")
             print(parameter.grad.size())
-            print(type(parameter))
+            print(parameter.weight.size())
             exit()
         # self.optimizerD.step()
 
