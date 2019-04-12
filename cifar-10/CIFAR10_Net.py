@@ -6,6 +6,7 @@ import random
 import torch
 import torch.nn as nn
 import torch.nn.parallel
+import torchvision
 import torch.backends.cudnn as cudnn
 import torch.optim as optim
 import torch.utils.data
@@ -234,7 +235,7 @@ class CIFAR10_Net():
         output = self.netD(batch_data).view(-1)
         errD_real = self.criterion(output, label)
         errD_real.backward()
-        noise = torch.randn(batch_size, nz, 1, 1, device=self.device)
+        noise = normalize(torch.randn(batch_size, nz, 1, 1, device=self.device))
         fake = self.netG(noise)
         label.fill_(fake_label)
         output = self.netD(fake.detach()).view(-1)

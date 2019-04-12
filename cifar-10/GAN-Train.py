@@ -38,13 +38,15 @@ def train(model_num, start_num, end_num):
     ])
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/train_' + str(model_num), transform)
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=1, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=100, shuffle=True, num_workers=2)
 
     Gan = CIFAR10_Net(model_num, start_num, end_num)
 
     G_loss = []
     D_loss = []
-    epoch_num = 1
+    epoch_num = 100
+
+    echo_batch = 2
 
     for epoch in range(epoch_num):
         for index, data in enumerate(trainloader):
@@ -52,9 +54,9 @@ def train(model_num, start_num, end_num):
             # Gan.adjust_learning_rate(index+1)
             Gan.train(data[0])
 
-            if (index + 1) % 20 == 0:
-                G_loss.append(sum(Gan.G_losses) / 20)
-                D_loss.append(sum(Gan.D_losses) / 20)
+            if (index + 1) % echo_batch == 0:
+                G_loss.append(sum(Gan.G_losses) / echo_batch)
+                D_loss.append(sum(Gan.D_losses) / echo_batch)
                 Gan.G_losses.clear()
                 Gan.D_losses.clear()
                 print('model_%d [%d/%d] batch_%d' % (model_num, epoch, epoch_num, index))
