@@ -10,6 +10,7 @@ from torch import optim
 from fkimgloader import FakeDataLoader
 from dataloader import CIFARDataLoader
 
+
 class Net(nn.Module):
     def __init__(self):
         # nn.Module子类的函数必须在构造函数中执行父类的构造函数
@@ -18,8 +19,9 @@ class Net(nn.Module):
 
         self.conv1 = nn.Conv2d(3, 6, 5)
         self.conv2 = nn.Conv2d(6, 16, 5)
+        self.conv3 = nn.Conv2d(16, 26, 5)
 
-        self.fc1 = nn.Linear(16 * 13 * 13, 120)
+        self.fc1 = nn.Linear(26 * 9 * 9, 120)
         self.fc2 = nn.Linear(120, 84)
         self.fc3 = nn.Linear(84, 10)
 
@@ -32,6 +34,9 @@ class Net(nn.Module):
         x = self.conv2(x)
         x = F.relu(x)
         x = F.max_pool2d(x, 2)
+
+        x = self.conv3(x)
+        x = F.relu(x)
 
         x = x.view(x.size(0), -1)
         x = F.relu(self.fc1(x))
@@ -56,7 +61,7 @@ if __name__ == '__main__':
 
     for index, data in enumerate(trainloader, 0):
         inputs, labels = data
-        #print(inputs.size())
+        # print(inputs.size())
         if torch.cuda.is_available():
             inputs = inputs.cuda()
             labels = labels.cuda()
@@ -73,9 +78,9 @@ if __name__ == '__main__':
     torch.save(net, 'result/cifar-net.pt')
     print('save model ..... OK')
 
-    #test acc
+    # test acc
     print('test acc')
-    
+
     net.eval()
     transform = transforms.Compose([
         transforms.Resize(64),
@@ -86,7 +91,7 @@ if __name__ == '__main__':
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/test', transform)
     testloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=50, shuffle=True, num_workers=2)
-    
+
     total_acc = 0
     total = 0
     for i, data in enumerate(testloader, 0):
@@ -98,18 +103,15 @@ if __name__ == '__main__':
 
         outputs = net(images)
 
-        #print(outputs.size())
-        #print(outputs[0])
-        #print(outputs[1])
-        _, index  = torch.max(outputs.data, 1)
-        #print(index)
-        #print(labels)
+        # print(outputs.size())
+        # print(outputs[0])
+        # print(outputs[1])
+        _, index = torch.max(outputs.data, 1)
+        # print(index)
+        # print(labels)
         for i in range(len(index)):
             if index[i] == labels[i]:
                 total_acc += 1
         total += 50
 
-    print('acc :',total_acc*1.0/total)
-
-
-
+    print('acc :', total_acc * 1.0 / total)
