@@ -107,7 +107,7 @@ if __name__ == '__main__':
 
     total_acc = 0
     total = 0
-    for index, data in enumerate(trainloader, 0):
+    for count, data in enumerate(trainloader, 0):
         inputs, labels = data
         # print(inputs.size())
         if torch.cuda.is_available():
@@ -122,7 +122,7 @@ if __name__ == '__main__':
         total += batch_size
 
         # save img
-        if index == 0:
+        if count == 0:
             showimg(inputs.cpu(), 'train_data_img.png')
     print('acc :', total_acc * 1.0 / total)
 
@@ -140,7 +140,7 @@ if __name__ == '__main__':
 
     total_acc = 0
     total = 0
-    for i, data in enumerate(testloader, 0):
+    for count, data in enumerate(testloader, 0):
         images, labels = data
         index = labels
 
@@ -161,7 +161,7 @@ if __name__ == '__main__':
         total += batch_size
 
         #save img
-        if index == 0:
+        if count == 0:
             showimg(images.cpu(), 'test_data_img.png')
 
     print('acc :', total_acc * 1.0 / total)
