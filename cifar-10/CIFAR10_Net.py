@@ -24,10 +24,9 @@ nz = 100
 ngf = 32
 ndf = 32
 num_epochs = 50
-lr = 0.0002
-# lr = 0.001
+D_lr = 0.0002
+G_lr = 0.0002
 beta1 = 0.5
-ngpu = 2
 
 
 # custom weights initialization called on netG and netD
@@ -163,13 +162,13 @@ class CIFAR10_Net():
         print(self.netG)
         print(self.netD)
 
-        self.D_lr = 0.0002
-        self.G_lr = 0.0002
+        self.D_lr = D_lr
+        self.G_lr = G_lr
 
         self.criterion = nn.BCELoss()
         # self.criterion = nn.MSELoss()
-        self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr)
-        self.optimizerG = optim.Adam(self.netG.parameters(), lr=self.G_lr)
+        self.optimizerD = optim.Adam(self.netD.parameters(), lr=self.D_lr ,betas=(beta1 ,0.999))
+        self.optimizerG = optim.Adam(self.netG.parameters(), lr=self.G_lr ,betas=(beta1 ,0.999))
 
         self.G_losses = []
         self.D_losses = []
