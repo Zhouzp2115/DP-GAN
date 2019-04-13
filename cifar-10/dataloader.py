@@ -1,11 +1,9 @@
-# coding:utf-8
+#coding:utf-8
 import pickle
 import torch.utils.data as data
 import numpy as np
 
 from PIL import Image
-
-
 
 class CIFARDataLoader(data.Dataset):
     def __init__(self, fileDir, transform):
@@ -26,9 +24,6 @@ class CIFARDataLoader(data.Dataset):
         #- C:Channel
 
     def __getitem__(self, index):
-        img, target = self.dataset[index], self.labels[index]
-        img = Image.fromarray(img)
-
         data = Image.fromarray(self.dataset[index])
         label = self.labels[index]
 

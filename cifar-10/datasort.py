@@ -1,12 +1,10 @@
 import pickle
 import os
 
-
 def unPickle(fileDir):
     fo = open(fileDir, 'rb')
     dict = pickle.load(fo, encoding='latin1')
     return dict
-
 
 def saveData(dir, filename, dict):
     if not os.path.exists(dir):
