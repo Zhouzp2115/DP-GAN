@@ -44,7 +44,8 @@ def train(model_num, start_num, end_num):
                 D_loss.append(sum(Gan.D_losses) / echo_batch)
                 Gan.G_losses.clear()
                 Gan.D_losses.clear()
-                print('batch datasize ', data[0].size())
+                print('batch datasize ')
+                print(data[0].size())
                 print('model_%d [%d/%d] batch_%d' % (model_num, epoch, epoch_num, index))
                 print('Loss_D: %.4f\tLoss_G: %.4f' % (D_loss[-1], G_loss[-1]))
 
