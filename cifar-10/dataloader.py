@@ -1,10 +1,10 @@
 # coding:utf-8
-
 import pickle
 import torch.utils.data as data
+import numpy as np
 
 from PIL import Image
-import numpy as np
+
 
 
 class CIFARDataLoader(data.Dataset):
@@ -19,7 +19,11 @@ class CIFARDataLoader(data.Dataset):
 
         self.dataset = np.concatenate(self.dataset)
         self.dataset = self.dataset.reshape((self.size, 3, 32, 32))
-        self.dataset = self.dataset.transpose((0, 2, 3, 1))  # convert to HWC
+        self.dataset = self.dataset.transpose((0, 2, 3, 1))
+        # convert to HWC
+        #- H:Height
+        #- W:Width
+        #- C:Channel
 
     def __getitem__(self, index):
         img, target = self.dataset[index], self.labels[index]
