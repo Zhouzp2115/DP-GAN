@@ -51,27 +51,34 @@ if __name__ == '__main__':
     trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
 
     net = Net()
-    net.train(mode=True)
-
+    net.train()
     if torch.cuda.is_available():
         net.cuda()
+
+    if (torch.cuda.is_available()) and (torch.cuda.device_count() > 1):
+        print('DataParallel')
+        net = nn.DataParallel(net, list(range(torch.cuda.device_count())))
+    else:
+        print('GPU num ', torch.cuda.device_count())
 
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-    for index, data in enumerate(trainloader, 0):
-        inputs, labels = data
-        # print(inputs.size())
-        if torch.cuda.is_available():
-            inputs = inputs.cuda()
-            labels = labels.cuda()
-        net.zero_grad()
-        outputs = net(inputs)
-        loss = criterion(outputs, labels)
-        loss.backward()
-        optimizer.step()
+    epoch = 10
+    for epo in range(epoch):
+        for index, data in enumerate(trainloader, 0):
+            inputs, labels = data
+            # print(inputs.size())
+            if torch.cuda.is_available():
+                inputs = inputs.cuda()
+                labels = labels.cuda()
+            net.zero_grad()
+            outputs = net(inputs)
+            loss = criterion(outputs, labels)
+            loss.backward()
+            optimizer.step()
 
-        print('batch_%d loss: %.4f' % (index, loss.item()))
+            print('[%d/%d] batch_%d loss: %.4f' % (epo, epoch, index, loss.item()))
 
     print('Finished Training')
 
