@@ -67,7 +67,7 @@ if __name__ == '__main__':
     criterion = nn.CrossEntropyLoss()
     optimizer = optim.Adam(net.parameters(), lr=0.001)
 
-    epoch = 10
+    epoch = 2
     for epo in range(epoch):
         for index, data in enumerate(trainloader, 0):
             inputs, labels = data
