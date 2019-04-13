@@ -18,7 +18,7 @@ class FakeDataLoader(data.Dataset):
 
     def __getitem__(self, index):
         img, label = self.dataset[index], self.labels[index]
-        img = img.reshape(3,32,32)
+        img = img.reshape(3,64,64)
         return img, label
 
     def __len__(self):

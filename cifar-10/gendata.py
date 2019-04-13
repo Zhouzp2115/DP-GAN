@@ -19,7 +19,7 @@ def saveData(dir, filename, dict):
 if __name__ == "__main__":
     nets = []
     for i in range(10):
-        nets.append(torch.load('Gan_' + str(i) + '.pt'))
+        nets.append(torch.load('result/Gan_' + str(i) + '.pt'))
 
     fake = {'data': [], 'labels': []}
 
