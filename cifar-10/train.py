@@ -5,8 +5,11 @@ import torchvision
 import torchvision.transforms as transforms
 import torch.nn as nn
 import torch.nn.functional as F
-from torch import optim
+import torchvision.utils as vutils
+import matplotlib.pyplot as plt
+import numpy as np
 
+from torch import optim
 from fkimgloader import FakeDataLoader
 from dataloader import CIFARDataLoader
 
@@ -43,6 +46,17 @@ class Net(nn.Module):
         x = F.relu(self.fc2(x))
         x = F.softmax(self.fc3(x))
         return x
+
+
+def showimg(img, file):
+    img_list = []
+    img_list.append(vutils.make_grid(img, padding=2, normalize=True))
+
+    plt.subplot(1, 2, 2)
+    plt.axis("off")
+    plt.title("Images")
+    plt.imshow(np.transpose(img_list[-1], (1, 2, 0)))
+    plt.savefig(file)
 
 
 if __name__ == '__main__':
@@ -106,6 +120,10 @@ if __name__ == '__main__':
             if index[i] == labels[i]:
                 total_acc += 1
         total += batch_size
+
+        # save img
+        if index == 0:
+            showimg(inputs.cpu(), 'train_data_img.png')
     print('acc :', total_acc * 1.0 / total)
 
     # test acc in testset
@@ -141,5 +159,9 @@ if __name__ == '__main__':
             if index[i] == labels[i]:
                 total_acc += 1
         total += batch_size
+
+        #save img
+        if index == 0:
+            showimg(images.cpu(), 'test_data_img.png')
 
     print('acc :', total_acc * 1.0 / total)
