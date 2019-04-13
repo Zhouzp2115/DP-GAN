@@ -46,9 +46,12 @@ class Net(nn.Module):
 
 
 if __name__ == '__main__':
+
+    batch_size = 100
+
     CIFARDataset = FakeDataLoader(
         '../data/cifar-10/sorted/0-9_fake')
-    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=150, shuffle=True, num_workers=2)
+    trainloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     net = Net()
     net.train()
@@ -81,14 +84,32 @@ if __name__ == '__main__':
             print('[%d/%d] batch_%d loss: %.4f' % (epo, epoch, index, loss.item()))
 
     print('Finished Training')
-
     torch.save(net, 'result/cifar-net.pt')
     print('save model ..... OK')
 
-    # test acc
-    print('test acc')
-
     net.eval()
+    # test acc in trainset
+    print('test acc in trainset')
+
+    total_acc = 0
+    total = 0
+    for index, data in enumerate(trainloader, 0):
+        inputs, labels = data
+        # print(inputs.size())
+        if torch.cuda.is_available():
+            inputs = inputs.cuda()
+            labels = labels.cuda()
+        outputs = net(inputs)
+
+        _, index = torch.max(outputs.data, 1)
+        for i in range(len(index)):
+            if index[i] == labels[i]:
+                total_acc += 1
+        total += batch_size
+    print('acc :', total_acc * 1.0 / total)
+
+    # test acc in testset
+    print('test acc in testset')
     transform = transforms.Compose([
         transforms.Resize(64),
         transforms.CenterCrop(64),
@@ -97,7 +118,7 @@ if __name__ == '__main__':
     ])
 
     CIFARDataset = CIFARDataLoader('../data/cifar-10/sorted/test', transform)
-    testloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=50, shuffle=True, num_workers=2)
+    testloader = torch.utils.data.DataLoader(CIFARDataset, batch_size=batch_size, shuffle=True, num_workers=2)
 
     total_acc = 0
     total = 0
@@ -119,6 +140,6 @@ if __name__ == '__main__':
         for i in range(len(index)):
             if index[i] == labels[i]:
                 total_acc += 1
-        total += 50
+        total += batch_size
 
     print('acc :', total_acc * 1.0 / total)
