@@ -1,1 +1,1 @@
-GAN
+GAN with Differential Privacy
